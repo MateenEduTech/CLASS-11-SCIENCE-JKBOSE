@@ -1,0 +1,41 @@
+{
+  "name": "Class 11 Biology – JKBOSE",
+  "short_name": "Bio11",
+  "description": "JKBOSE Class 11 Biology Interactive Learning App by Mateen Yousuf",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#040d1a",
+  "theme_color": "#00e676",
+  "lang": "en",
+  "categories": ["education", "science"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='32' fill='%23040d1a'/><text y='130' x='20' font-size='130'>🧬</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%23040d1a'/><text y='370' x='30' font-size='380'>🧬</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Quick Quiz",
+      "short_name": "Quiz",
+      "description": "Jump to the quick quiz",
+      "url": "./index.html#quiz"
+    },
+    {
+      "name": "Simulation Lab",
+      "short_name": "Lab",
+      "description": "Open simulation lab",
+      "url": "./index.html#lab"
+    }
+  ]
+}

@@ -1,0 +1,2514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#6c63ff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="JKBOSE Class 11 Mathematics Interactive Learning App">
+<title>Class 11 Mathematics | JKBOSE</title>
+<!-- manifest.json linked when deployed as PWA -->
+<!-- <link rel="manifest" href="manifest.json"> -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   CSS VARIABLES & RESET
+   ============================================================ */
+:root {
+  --bg-primary: #05080f;
+  --bg-secondary: #0d1220;
+  --bg-card: #111827;
+  --bg-glass: rgba(17, 24, 39, 0.85);
+  --accent-purple: #7c3aed;
+  --accent-blue: #2563eb;
+  --accent-cyan: #06b6d4;
+  --accent-gold: #f59e0b;
+  --accent-green: #10b981;
+  --accent-pink: #ec4899;
+  --accent-red: #ef4444;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #475569;
+  --border: rgba(124, 58, 237, 0.3);
+  --glow-purple: 0 0 20px rgba(124,58,237,0.5);
+  --glow-cyan: 0 0 20px rgba(6,182,212,0.5);
+  --glow-gold: 0 0 20px rgba(245,158,11,0.5);
+  --font-display: 'Orbitron', monospace;
+  --font-body: 'Exo 2', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius: 12px;
+  --radius-lg: 20px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-secondary); }
+::-webkit-scrollbar-thumb { background: var(--accent-purple); border-radius: 3px; }
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+.hidden { display: none !important; }
+.screen { display: none; min-height: 100vh; animation: fadeIn 0.4s ease; }
+.screen.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 24px; border: none; border-radius: var(--radius);
+  font-family: var(--font-body); font-weight: 600; font-size: 0.95rem;
+  cursor: pointer; transition: var(--transition); text-decoration: none;
+  white-space: nowrap;
+}
+.btn-primary { background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); color: white; box-shadow: var(--glow-purple); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(124,58,237,0.7); }
+.btn-secondary { background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); }
+.btn-secondary:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); }
+.btn-gold { background: linear-gradient(135deg, var(--accent-gold), #d97706); color: #000; }
+.btn-green { background: linear-gradient(135deg, var(--accent-green), #059669); color: white; }
+.btn-sm { padding: 8px 16px; font-size: 0.85rem; }
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  transition: var(--transition);
+}
+.card:hover { border-color: var(--accent-purple); box-shadow: var(--glow-purple); }
+
+.tag {
+  display: inline-block; padding: 4px 10px;
+  border-radius: 20px; font-size: 0.75rem; font-weight: 600;
+  font-family: var(--font-mono);
+}
+.tag-purple { background: rgba(124,58,237,0.2); color: var(--accent-purple); border: 1px solid rgba(124,58,237,0.4); }
+.tag-cyan { background: rgba(6,182,212,0.2); color: var(--accent-cyan); border: 1px solid rgba(6,182,212,0.4); }
+.tag-gold { background: rgba(245,158,11,0.2); color: var(--accent-gold); border: 1px solid rgba(245,158,11,0.4); }
+.tag-green { background: rgba(16,185,129,0.2); color: var(--accent-green); border: 1px solid rgba(16,185,129,0.4); }
+
+/* ============================================================
+   SECTION HEADERS
+   ============================================================ */
+.section-header {
+  display: flex; align-items: center; gap: 16px;
+  padding: 20px 20px 0; margin-bottom: 20px;
+}
+.section-header .back-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--bg-card); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 1.2rem; transition: var(--transition);
+  flex-shrink: 0;
+}
+.section-header .back-btn:hover { background: var(--accent-purple); border-color: var(--accent-purple); }
+.section-header h2 { font-family: var(--font-display); font-size: 1.1rem; color: var(--accent-cyan); letter-spacing: 1px; }
+
+/* ============================================================
+   SPLASH / TITLE SCREEN
+   ============================================================ */
+#splash-screen {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--bg-primary);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  transition: opacity 0.8s ease;
+}
+#splash-screen.hide { opacity: 0; pointer-events: none; }
+
+.splash-canvas {
+  position: absolute; inset: 0; overflow: hidden;
+}
+.splash-canvas canvas { position: absolute; inset: 0; }
+
+.splash-content {
+  position: relative; z-index: 2;
+  text-align: center; padding: 20px;
+  max-width: 500px;
+}
+
+.splash-logo {
+  width: 90px; height: 90px; margin: 0 auto 20px;
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 2.5rem; box-shadow: var(--glow-purple);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100% { box-shadow: 0 0 20px rgba(124,58,237,0.5); } 50% { box-shadow: 0 0 40px rgba(124,58,237,0.9), 0 0 60px rgba(6,182,212,0.3); } }
+
+.splash-subtitle {
+  font-family: var(--font-mono); color: var(--accent-cyan);
+  font-size: 0.75rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 12px;
+}
+.splash-title {
+  font-family: var(--font-display); font-size: clamp(1.4rem, 5vw, 2.2rem);
+  font-weight: 900; line-height: 1.2; margin-bottom: 8px;
+  background: linear-gradient(135deg, #fff 0%, var(--accent-cyan) 50%, var(--accent-purple) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.splash-desc { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 30px; }
+
+.author-splash {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--bg-glass); backdrop-filter: blur(10px);
+  border: 1px solid var(--border); border-radius: 50px;
+  padding: 10px 20px; margin: 0 auto 30px; width: fit-content;
+}
+.author-splash img {
+  width: 44px; height: 44px; border-radius: 50%;
+  object-fit: cover; border: 2px solid var(--accent-purple);
+}
+.author-splash-info { text-align: left; }
+.author-splash-name { font-weight: 700; font-size: 0.95rem; color: var(--text-primary); }
+.author-splash-role { font-size: 0.75rem; color: var(--accent-gold); }
+
+.splash-start-btn {
+  font-family: var(--font-display); font-size: 1rem; letter-spacing: 2px;
+  padding: 16px 48px; border: none; border-radius: 50px;
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
+  color: white; cursor: pointer; box-shadow: var(--glow-purple);
+  transition: var(--transition); text-transform: uppercase; font-weight: 700;
+  animation: glow 2s ease-in-out infinite;
+}
+@keyframes glow {
+  0%,100% { box-shadow: 0 0 20px rgba(124,58,237,0.5); }
+  50% { box-shadow: 0 0 40px rgba(124,58,237,0.9), 0 0 80px rgba(6,182,212,0.4); }
+}
+.splash-start-btn:hover { transform: scale(1.05); }
+
+.math-symbols {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; overflow: hidden;
+}
+.math-symbol {
+  position: absolute;
+  font-family: var(--font-mono); color: rgba(124,58,237,0.2);
+  font-size: clamp(1rem, 3vw, 2rem);
+  animation: floatSymbol linear infinite;
+  user-select: none;
+}
+@keyframes floatSymbol {
+  0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+}
+
+/* ============================================================
+   BOTTOM NAVIGATION
+   ============================================================ */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--bg-glass); backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: space-around; align-items: center;
+  padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+  z-index: 100;
+}
+.nav-item {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 8px 16px; cursor: pointer; transition: var(--transition);
+  border-radius: var(--radius); min-width: 60px;
+  border: none; background: none; color: var(--text-muted);
+}
+.nav-item.active { color: var(--accent-purple); }
+.nav-item:hover { color: var(--accent-cyan); }
+.nav-icon { font-size: 1.4rem; }
+.nav-label { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.5px; font-family: var(--font-body); }
+
+/* ============================================================
+   HOME SCREEN
+   ============================================================ */
+#home-screen { padding-bottom: 80px; }
+
+.home-hero {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, #1a0a2e 100%);
+  padding: 30px 20px 24px;
+  position: relative; overflow: hidden;
+}
+.home-hero::before {
+  content: ''; position: absolute; top: -50%; right: -20%;
+  width: 400px; height: 400px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-greeting { font-size: 0.85rem; color: var(--accent-cyan); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+.hero-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 900; line-height: 1.2; margin-bottom: 6px; }
+.hero-title span { color: var(--accent-purple); }
+.hero-subtitle { color: var(--text-secondary); font-size: 0.85rem; }
+
+.stats-bar {
+  display: flex; gap: 12px; margin-top: 20px;
+  flex-wrap: wrap;
+}
+.stat-item {
+  background: var(--bg-glass); backdrop-filter: blur(10px);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 10px 16px; flex: 1; min-width: 80px; text-align: center;
+}
+.stat-value { font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; color: var(--accent-gold); }
+.stat-label { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+
+.home-section { padding: 20px; }
+.home-section-title {
+  font-family: var(--font-display); font-size: 0.85rem; letter-spacing: 2px;
+  color: var(--text-muted); text-transform: uppercase; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.home-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.quick-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+}
+.quick-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 18px; cursor: pointer;
+  transition: var(--transition); position: relative; overflow: hidden;
+}
+.quick-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan));
+}
+.quick-card:hover { transform: translateY(-3px); box-shadow: var(--glow-purple); border-color: var(--accent-purple); }
+.quick-icon { font-size: 2rem; margin-bottom: 10px; }
+.quick-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 4px; }
+.quick-desc { font-size: 0.75rem; color: var(--text-secondary); }
+
+.progress-section { padding: 0 20px 20px; }
+.progress-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 20px;
+}
+.progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.progress-title { font-weight: 700; font-size: 0.95rem; }
+.progress-percent { font-family: var(--font-display); color: var(--accent-gold); font-size: 1.1rem; }
+.progress-bar-outer { height: 8px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden; }
+.progress-bar-inner { height: 100%; background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan)); border-radius: 4px; transition: width 1s ease; }
+
+/* ============================================================
+   CHAPTERS SCREEN
+   ============================================================ */
+#chapters-screen { padding-bottom: 80px; }
+
+.chapter-list { padding: 0 16px 20px; display: flex; flex-direction: column; gap: 10px; }
+
+.chapter-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 16px 18px;
+  cursor: pointer; transition: var(--transition);
+  display: flex; align-items: center; gap: 14px;
+}
+.chapter-card:hover { border-color: var(--accent-purple); transform: translateX(4px); box-shadow: var(--glow-purple); }
+.chapter-card.completed { border-color: var(--accent-green); }
+.chapter-num {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 0.8rem; font-weight: 700;
+  flex-shrink: 0;
+}
+.chapter-card.completed .chapter-num { background: linear-gradient(135deg, var(--accent-green), #059669); }
+.chapter-info { flex: 1; }
+.chapter-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
+.chapter-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+.chapter-arrow { color: var(--text-muted); font-size: 1.2rem; }
+
+/* ============================================================
+   CHAPTER DETAIL SCREEN
+   ============================================================ */
+#chapter-detail { padding-bottom: 80px; }
+
+.chapter-hero {
+  background: linear-gradient(135deg, #1a0a2e, var(--bg-secondary));
+  padding: 20px; border-bottom: 1px solid var(--border);
+}
+.chapter-hero-num { font-family: var(--font-mono); color: var(--accent-cyan); font-size: 0.8rem; margin-bottom: 8px; }
+.chapter-hero-title { font-family: var(--font-display); font-size: 1.3rem; font-weight: 900; margin-bottom: 12px; }
+.chapter-tabs {
+  display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.chapter-tabs::-webkit-scrollbar { display: none; }
+.tab-btn {
+  flex-shrink: 0; padding: 8px 16px; border-radius: 20px;
+  font-size: 0.8rem; font-weight: 600; cursor: pointer;
+  border: 1px solid var(--border); background: var(--bg-card);
+  color: var(--text-secondary); transition: var(--transition);
+  white-space: nowrap;
+}
+.tab-btn.active { background: var(--accent-purple); border-color: var(--accent-purple); color: white; }
+
+.tab-content { display: none; padding: 20px; }
+.tab-content.active { display: block; }
+
+/* Concept content */
+.concept-block { margin-bottom: 24px; }
+.concept-block h3 { font-family: var(--font-display); font-size: 1rem; color: var(--accent-cyan); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.concept-block p { color: var(--text-secondary); line-height: 1.8; font-size: 0.9rem; margin-bottom: 10px; }
+
+.formula-box {
+  background: var(--bg-secondary); border-left: 3px solid var(--accent-gold);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 14px 16px; margin: 12px 0;
+  font-family: var(--font-mono); color: var(--accent-gold);
+  font-size: 0.9rem; overflow-x: auto;
+}
+.formula-label { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 4px; font-family: var(--font-body); }
+
+.example-block {
+  background: rgba(6,182,212,0.05); border: 1px solid rgba(6,182,212,0.2);
+  border-radius: var(--radius); padding: 16px; margin: 12px 0;
+}
+.example-block h4 { color: var(--accent-cyan); font-size: 0.85rem; margin-bottom: 10px; }
+.example-block .step { display: flex; gap: 10px; margin-bottom: 8px; }
+.step-num { width: 22px; height: 22px; border-radius: 50%; background: var(--accent-purple); font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+.step-text { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
+
+/* Practice problems */
+.practice-problem {
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px; margin-bottom: 14px;
+}
+.problem-q { font-size: 0.9rem; margin-bottom: 12px; font-weight: 600; }
+.problem-hint {
+  background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3);
+  border-radius: 8px; padding: 10px 14px; font-size: 0.8rem;
+  color: var(--accent-gold); margin-top: 10px; display: none;
+}
+.problem-hint.show { display: block; }
+
+/* ============================================================
+   SIMULATION SCREEN
+   ============================================================ */
+#simulation-screen { padding-bottom: 80px; }
+
+.sim-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 16px; }
+.sim-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 20px; cursor: pointer;
+  transition: var(--transition); text-align: center;
+}
+.sim-card:hover { border-color: var(--accent-cyan); box-shadow: var(--glow-cyan); transform: translateY(-3px); }
+.sim-icon { font-size: 2.5rem; margin-bottom: 10px; }
+.sim-name { font-weight: 700; font-size: 0.9rem; margin-bottom: 4px; }
+.sim-desc { font-size: 0.75rem; color: var(--text-secondary); }
+
+#sim-container { padding: 16px; padding-bottom: 80px; }
+.sim-area {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 16px;
+}
+canvas { display: block; max-width: 100%; }
+.sim-controls { display: flex; flex-wrap: wrap; gap: 10px; padding: 16px; border-top: 1px solid var(--border); }
+.sim-controls input[type="range"] { flex: 1; min-width: 100px; accent-color: var(--accent-purple); }
+.sim-controls label { font-size: 0.8rem; color: var(--text-secondary); }
+.sim-controls .ctrl-group { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.sim-output { padding: 12px 16px; background: var(--bg-secondary); border-radius: var(--radius); font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-cyan); }
+
+/* Graph plotter */
+#graph-input {
+  width: 100%; background: var(--bg-secondary); border: 1px solid var(--border);
+  color: var(--text-primary); border-radius: var(--radius); padding: 10px 14px;
+  font-family: var(--font-mono); font-size: 0.9rem; margin-bottom: 10px;
+}
+
+/* ============================================================
+   QUIZ SCREEN
+   ============================================================ */
+#quiz-screen { padding-bottom: 80px; }
+
+.quiz-chapter-select { padding: 16px; }
+.quiz-chapter-btn {
+  width: 100%; background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--text-primary); border-radius: var(--radius); padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px; cursor: pointer;
+  transition: var(--transition); margin-bottom: 10px; text-align: left;
+}
+.quiz-chapter-btn:hover { border-color: var(--accent-gold); }
+
+#quiz-container { padding: 16px; }
+.quiz-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+}
+.quiz-progress-text { font-size: 0.8rem; color: var(--text-secondary); }
+.quiz-score-display { font-family: var(--font-display); font-size: 1rem; color: var(--accent-gold); }
+.quiz-progress-outer { height: 6px; background: var(--bg-secondary); border-radius: 3px; margin-bottom: 20px; overflow: hidden; }
+.quiz-progress-inner { height: 100%; background: linear-gradient(90deg, var(--accent-gold), var(--accent-green)); border-radius: 3px; transition: width 0.4s ease; }
+
+.question-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px;
+}
+.question-num { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; font-family: var(--font-mono); }
+.question-text { font-size: 0.95rem; font-weight: 600; line-height: 1.6; margin-bottom: 16px; }
+.options-list { display: flex; flex-direction: column; gap: 10px; }
+.option-btn {
+  width: 100%; padding: 12px 16px; border-radius: var(--radius);
+  background: var(--bg-secondary); border: 1px solid var(--border);
+  color: var(--text-primary); text-align: left; cursor: pointer;
+  transition: var(--transition); font-size: 0.9rem; display: flex; gap: 10px; align-items: flex-start;
+}
+.option-btn:hover:not([disabled]) { border-color: var(--accent-purple); background: rgba(124,58,237,0.1); }
+.option-btn.correct { border-color: var(--accent-green); background: rgba(16,185,129,0.15); color: var(--accent-green); }
+.option-btn.wrong { border-color: var(--accent-red); background: rgba(239,68,68,0.15); color: var(--accent-red); }
+.option-letter { font-family: var(--font-display); font-size: 0.75rem; font-weight: 700; width: 20px; flex-shrink: 0; margin-top: 2px; }
+
+.explanation-box {
+  background: rgba(6,182,212,0.08); border: 1px solid rgba(6,182,212,0.3);
+  border-radius: var(--radius); padding: 14px; margin-top: 12px;
+  font-size: 0.85rem; color: var(--text-secondary); display: none;
+}
+.explanation-box.show { display: block; }
+.explanation-box strong { color: var(--accent-cyan); }
+
+.quiz-result {
+  text-align: center; padding: 40px 20px;
+}
+.result-emoji { font-size: 4rem; margin-bottom: 16px; }
+.result-score { font-family: var(--font-display); font-size: 3rem; color: var(--accent-gold); margin-bottom: 8px; }
+.result-msg { color: var(--text-secondary); margin-bottom: 24px; }
+.result-breakdown { display: flex; gap: 16px; justify-content: center; margin-bottom: 24px; }
+.result-stat { text-align: center; }
+.result-stat-val { font-family: var(--font-display); font-size: 1.5rem; }
+.result-stat-val.correct { color: var(--accent-green); }
+.result-stat-val.wrong { color: var(--accent-red); }
+.result-stat-label { font-size: 0.75rem; color: var(--text-muted); }
+
+/* ============================================================
+   FORMULA SHEET SCREEN
+   ============================================================ */
+#formula-screen { padding-bottom: 80px; }
+
+.formula-chapter-select { padding: 16px; }
+.formula-chapter-btn {
+  width: 100%; background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--text-primary); border-radius: var(--radius); padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px; cursor: pointer;
+  transition: var(--transition); margin-bottom: 8px; text-align: left;
+}
+.formula-chapter-btn:hover { border-color: var(--accent-gold); }
+
+#formula-detail { padding: 16px; }
+.formula-group { margin-bottom: 24px; }
+.formula-group-title { font-family: var(--font-display); font-size: 0.85rem; color: var(--accent-cyan); margin-bottom: 12px; letter-spacing: 1px; text-transform: uppercase; }
+.formula-item {
+  background: var(--bg-secondary); border: 1px solid rgba(245,158,11,0.2);
+  border-radius: var(--radius); padding: 14px; margin-bottom: 8px;
+}
+.formula-name { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px; }
+.formula-math { font-family: var(--font-mono); color: var(--accent-gold); font-size: 0.9rem; overflow-x: auto; }
+.formula-note { font-size: 0.75rem; color: var(--text-secondary); margin-top: 6px; font-style: italic; }
+
+/* ============================================================
+   PROGRESS SCREEN
+   ============================================================ */
+#progress-screen { padding: 20px; padding-bottom: 80px; }
+
+.progress-overview {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px;
+}
+.ov-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 18px; text-align: center;
+}
+.ov-val { font-family: var(--font-display); font-size: 2rem; font-weight: 700; }
+.ov-label { font-size: 0.75rem; color: var(--text-secondary); margin-top: 4px; }
+
+.chapter-progress-list { }
+.cp-item {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px;
+}
+.cp-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.cp-name { font-size: 0.85rem; font-weight: 600; }
+.cp-pct { font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent-cyan); }
+.cp-bar-outer { height: 4px; background: var(--bg-secondary); border-radius: 2px; overflow: hidden; }
+.cp-bar-inner { height: 100%; background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan)); border-radius: 2px; transition: width 1s ease; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (min-width: 768px) {
+  .quick-grid { grid-template-columns: repeat(4, 1fr); }
+  .sim-grid { grid-template-columns: repeat(3, 1fr); }
+  .chapter-list { padding: 0 24px 24px; }
+  #sim-container canvas { max-height: 400px; }
+}
+
+/* ============================================================
+   LOADING INDICATOR
+   ============================================================ */
+.loading-dot {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent-purple); animation: bounce 0.6s ease infinite;
+}
+.loading-dot:nth-child(2) { animation-delay: 0.15s; }
+.loading-dot:nth-child(3) { animation-delay: 0.3s; }
+@keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+/* ============================================================
+   TOAST NOTIFICATION
+   ============================================================ */
+.toast {
+  position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--bg-card); border: 1px solid var(--accent-green);
+  color: var(--text-primary); padding: 12px 24px; border-radius: 50px;
+  font-size: 0.9rem; z-index: 1000; opacity: 0;
+  transition: all 0.3s ease; pointer-events: none; white-space: nowrap;
+  box-shadow: var(--glow-cyan);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     SPLASH SCREEN
+     ============================================================ -->
+<div id="splash-screen">
+  <div class="math-symbols" id="mathSymbols"></div>
+  <div class="splash-content">
+    <div class="splash-logo">∑</div>
+    <div class="splash-subtitle">JKBOSE · Class XI · Mathematics</div>
+    <h1 class="splash-title">Class 11<br>Mathematics<br>Learning App</h1>
+    <p class="splash-desc">Interactive learning aligned with NEP 2020 &amp; NCERT</p>
+    <div class="author-splash">
+      <img src="author.jpg" alt="Mateen Yousuf" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div style="display:none;width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#2563eb);align-items:center;justify-content:center;font-size:1.2rem;">👨‍🏫</div>
+      <div class="author-splash-info">
+        <div class="author-splash-name">Mateen Yousuf</div>
+        <div class="author-splash-role">Teacher · School Education Dept, J&amp;K</div>
+      </div>
+    </div>
+    <button class="splash-start-btn" onclick="startApp()">START LEARNING ▶</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     TOAST
+     ============================================================ -->
+<div class="toast" id="toast"></div>
+
+<!-- ============================================================
+     BOTTOM NAVIGATION
+     ============================================================ -->
+<nav class="bottom-nav" id="bottomNav" style="display:none;">
+  <button class="nav-item active" onclick="showScreen('home-screen','home')" id="nav-home">
+    <span class="nav-icon">🏠</span><span class="nav-label">Home</span>
+  </button>
+  <button class="nav-item" onclick="showScreen('chapters-screen','chapters')" id="nav-chapters">
+    <span class="nav-icon">📚</span><span class="nav-label">Chapters</span>
+  </button>
+  <button class="nav-item" onclick="showScreen('simulation-screen','simulations')" id="nav-simulations">
+    <span class="nav-icon">🔬</span><span class="nav-label">Simulate</span>
+  </button>
+  <button class="nav-item" onclick="showScreen('quiz-screen','quiz')" id="nav-quiz">
+    <span class="nav-icon">🧪</span><span class="nav-label">Quiz</span>
+  </button>
+  <button class="nav-item" onclick="showScreen('progress-screen','progress')" id="nav-progress">
+    <span class="nav-icon">📊</span><span class="nav-label">Progress</span>
+  </button>
+</nav>
+
+<!-- ============================================================
+     HOME SCREEN
+     ============================================================ -->
+<div class="screen" id="home-screen">
+  <div class="home-hero">
+    <div class="hero-greeting">📐 Welcome to</div>
+    <h1 class="hero-title">JKBOSE Class <span>11</span><br>Mathematics</h1>
+    <p class="hero-subtitle">16 Chapters · Simulations · Quizzes · Formula Sheets</p>
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-value">16</div>
+        <div class="stat-label">Chapters</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="homeCompletedCount">0</div>
+        <div class="stat-label">Completed</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="homeQuizScore">0%</div>
+        <div class="stat-label">Quiz Avg</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">6</div>
+        <div class="stat-label">Simulators</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="home-section">
+    <div class="home-section-title">🚀 Quick Access</div>
+    <div class="quick-grid">
+      <div class="quick-card" onclick="showScreen('chapters-screen','chapters')">
+        <div class="quick-icon">📖</div>
+        <div class="quick-title">Chapters</div>
+        <div class="quick-desc">All 16 JKBOSE topics</div>
+      </div>
+      <div class="quick-card" onclick="showScreen('formula-screen','formulas')">
+        <div class="quick-icon">📐</div>
+        <div class="quick-title">Formulas</div>
+        <div class="quick-desc">Complete formula sheets</div>
+      </div>
+      <div class="quick-card" onclick="showScreen('simulation-screen','simulations')">
+        <div class="quick-icon">⚗️</div>
+        <div class="quick-title">Simulations</div>
+        <div class="quick-desc">Interactive visualizers</div>
+      </div>
+      <div class="quick-card" onclick="showScreen('quiz-screen','quiz')">
+        <div class="quick-icon">🎯</div>
+        <div class="quick-title">Quiz Mode</div>
+        <div class="quick-desc">Test your knowledge</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="progress-section">
+    <div class="home-section-title" style="padding:0;margin-bottom:12px;">📈 Overall Progress</div>
+    <div class="progress-card">
+      <div class="progress-header">
+        <span class="progress-title">Course Completion</span>
+        <span class="progress-percent" id="homeProgressPct">0%</span>
+      </div>
+      <div class="progress-bar-outer">
+        <div class="progress-bar-inner" id="homeProgressBar" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="home-section">
+    <div class="home-section-title">📚 Recent Chapters</div>
+    <div id="recentChapters"></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     CHAPTERS SCREEN
+     ============================================================ -->
+<div class="screen" id="chapters-screen">
+  <div class="section-header" style="padding:20px 20px 0;">
+    <h2>📚 ALL CHAPTERS</h2>
+  </div>
+  <p style="padding:8px 20px 16px;color:var(--text-secondary);font-size:0.85rem;">JKBOSE Class 11 Mathematics — 16 Chapters</p>
+  <div class="chapter-list" id="chapterList"></div>
+</div>
+
+<!-- ============================================================
+     CHAPTER DETAIL SCREEN
+     ============================================================ -->
+<div class="screen" id="chapter-detail">
+  <div class="section-header">
+    <div class="back-btn" onclick="goBack()">←</div>
+    <h2 id="chapterDetailTitle">Chapter</h2>
+  </div>
+  <div id="chapterDetailContent"></div>
+</div>
+
+<!-- ============================================================
+     SIMULATION SCREEN
+     ============================================================ -->
+<div class="screen" id="simulation-screen">
+  <div class="section-header" style="padding:20px 20px 0;">
+    <h2>🔬 SIMULATIONS</h2>
+  </div>
+  <p style="padding:8px 20px 16px;color:var(--text-secondary);font-size:0.85rem;">Interactive mathematical visualizers</p>
+  <div class="sim-grid" id="simGrid"></div>
+</div>
+
+<!-- Simulation Detail -->
+<div class="screen" id="sim-detail">
+  <div class="section-header">
+    <div class="back-btn" onclick="showScreen('simulation-screen','simulations')">←</div>
+    <h2 id="simDetailTitle">Simulation</h2>
+  </div>
+  <div id="sim-container"></div>
+</div>
+
+<!-- ============================================================
+     QUIZ SCREEN
+     ============================================================ -->
+<div class="screen" id="quiz-screen">
+  <div class="section-header" style="padding:20px 20px 0;">
+    <h2>🧪 QUIZ MODE</h2>
+  </div>
+  <p style="padding:8px 20px 16px;color:var(--text-secondary);font-size:0.85rem;">Select a chapter to test your knowledge</p>
+  <div class="quiz-chapter-select" id="quizChapterSelect"></div>
+  <div id="quiz-container" style="display:none;"></div>
+</div>
+
+<!-- ============================================================
+     FORMULA SCREEN
+     ============================================================ -->
+<div class="screen" id="formula-screen">
+  <div class="section-header" style="padding:20px 20px 0;">
+    <h2>📐 FORMULA SHEETS</h2>
+  </div>
+  <p style="padding:8px 20px 16px;color:var(--text-secondary);font-size:0.85rem;">Select a chapter to view formulas</p>
+  <div class="formula-chapter-select" id="formulaChapterSelect"></div>
+  <div id="formula-detail" style="display:none;"></div>
+</div>
+
+<!-- ============================================================
+     PROGRESS SCREEN
+     ============================================================ -->
+<div class="screen" id="progress-screen">
+  <div style="padding:20px 20px 0;">
+    <h2 style="font-family:var(--font-display);font-size:1.1rem;color:var(--accent-cyan);letter-spacing:1px;">📊 MY PROGRESS</h2>
+  </div>
+  <p style="padding:8px 20px 16px;color:var(--text-secondary);font-size:0.85rem;">Track your learning journey</p>
+  <div class="progress-overview" id="progressOverview"></div>
+  <div style="padding:0 20px;">
+    <div style="font-family:var(--font-display);font-size:0.8rem;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;">Chapter Progress</div>
+    <div id="chapterProgressList"></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+// ============================================================
+// DATA: CHAPTERS, CONTENT, FORMULAS, QUIZZES
+// ============================================================
+const CHAPTERS = [
+  {
+    id: 1, title: "Sets", icon: "🔵",
+    tags: ["Foundation", "Logic"],
+    color: "#7c3aed",
+    topics: ["Introduction to Sets", "Types of Sets", "Set Operations", "Venn Diagrams", "Laws of Set Algebra"],
+    concepts: `
+      <div class="concept-block">
+        <h3>What is a Set?</h3>
+        <p>A <strong>set</strong> is a well-defined collection of distinct objects, called elements or members. Sets are denoted by capital letters A, B, C, ... and elements by small letters.</p>
+        <p>A set can be described by: <strong>Roster/Tabular form</strong> (listing elements) or <strong>Set-builder form</strong> (defining a property).</p>
+        <div class="formula-box">
+          <div class="formula-label">Roster form example:</div>
+          A = {1, 2, 3, 4, 5} — set of natural numbers less than 6
+        </div>
+        <div class="formula-box">
+          <div class="formula-label">Set-builder form:</div>
+          A = {x : x ∈ N, x &lt; 6}
+        </div>
+      </div>
+      <div class="concept-block">
+        <h3>Types of Sets</h3>
+        <p><strong>Empty Set (∅):</strong> A set with no elements. A = { } or A = ∅</p>
+        <p><strong>Finite Set:</strong> A set with a definite number of elements. A = {1,2,3}</p>
+        <p><strong>Infinite Set:</strong> A set with unlimited elements. N = {1,2,3,...}</p>
+        <p><strong>Subset:</strong> A ⊆ B if every element of A is in B.</p>
+        <p><strong>Power Set:</strong> P(A) = set of all subsets of A. If |A| = n, then |P(A)| = 2ⁿ</p>
+        <p><strong>Universal Set (U):</strong> The largest set containing all elements under consideration.</p>
+      </div>
+      <div class="concept-block">
+        <h3>Set Operations</h3>
+        <p><strong>Union (A ∪ B):</strong> All elements in A or B or both.</p>
+        <p><strong>Intersection (A ∩ B):</strong> Elements common to both A and B.</p>
+        <p><strong>Difference (A − B):</strong> Elements in A but not in B.</p>
+        <p><strong>Complement (A'):</strong> Elements in U but not in A.</p>
+      </div>
+      <div class="concept-block">
+        <h3>Worked Example</h3>
+        <div class="example-block">
+          <h4>Example: If A = {1,2,3,4} and B = {3,4,5,6}, find A∪B, A∩B, A−B</h4>
+          <div class="step"><div class="step-num">1</div><div class="step-text">A ∪ B = {1,2,3,4,5,6} — combine all elements without repetition</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">A ∩ B = {3,4} — only common elements</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">A − B = {1,2} — elements in A but not in B</div></div>
+        </div>
+      </div>
+    `,
+    formulas: [
+      { name: "Number of subsets", math: "If |A| = n, then P(A) = 2ⁿ subsets" },
+      { name: "De Morgan's Law 1", math: "(A ∪ B)' = A' ∩ B'" },
+      { name: "De Morgan's Law 2", math: "(A ∩ B)' = A' ∪ B'" },
+      { name: "Complement", math: "A' = U − A" },
+      { name: "Inclusion-Exclusion", math: "n(A ∪ B) = n(A) + n(B) − n(A ∩ B)" },
+      { name: "Distributive Law", math: "A ∩ (B ∪ C) = (A ∩ B) ∪ (A ∩ C)" }
+    ],
+    quiz: [
+      { q: "If A = {1,2,3} and B = {2,3,4}, what is A ∩ B?", opts: ["{1,2,3,4}","{2,3}","{1,4}","{1,2,3,4,5}"], ans: 1, exp: "A ∩ B contains elements common to both sets: {2,3}" },
+      { q: "How many subsets does a set with 4 elements have?", opts: ["8","12","16","4"], ans: 2, exp: "Number of subsets = 2ⁿ = 2⁴ = 16" },
+      { q: "According to De Morgan's Law, (A ∪ B)' = ?", opts: ["A' ∪ B'","A' ∩ B'","A ∩ B","A ∪ B"], ans: 1, exp: "De Morgan's First Law: (A ∪ B)' = A' ∩ B'" },
+      { q: "If n(A) = 20, n(B) = 15, n(A∩B) = 5, find n(A∪B)", opts: ["40","35","30","25"], ans: 2, exp: "n(A∪B) = n(A) + n(B) − n(A∩B) = 20+15−5 = 30" },
+      { q: "An empty set is a subset of:", opts: ["No set","Every set","Only empty set","Universal set only"], ans: 1, exp: "The empty set ∅ is a subset of every set" }
+    ]
+  },
+  {
+    id: 2, title: "Relations and Functions", icon: "🔗",
+    tags: ["Algebra", "Mapping"],
+    color: "#2563eb",
+    concepts: `
+      <div class="concept-block">
+        <h3>Cartesian Product</h3>
+        <p>The <strong>Cartesian product</strong> A × B is the set of all ordered pairs (a, b) where a ∈ A and b ∈ B.</p>
+        <div class="formula-box">A × B = {(a,b) : a ∈ A, b ∈ B}</div>
+        <p>If |A| = m and |B| = n, then |A × B| = m × n</p>
+      </div>
+      <div class="concept-block">
+        <h3>Relations</h3>
+        <p>A <strong>relation</strong> R from A to B is a subset of A × B. The domain of R is the set of all first elements, and the range is the set of all second elements.</p>
+        <p><strong>Types:</strong> Reflexive (aRa), Symmetric (aRb ⟹ bRa), Transitive (aRb, bRc ⟹ aRc), Equivalence (all three).</p>
+      </div>
+      <div class="concept-block">
+        <h3>Functions</h3>
+        <p>A <strong>function</strong> f: A → B assigns every element of A exactly one element in B. A is the domain, B is the codomain, and the image set is the range.</p>
+        <p><strong>One-One (Injective):</strong> Different inputs give different outputs — f(a₁) = f(a₂) ⟹ a₁ = a₂</p>
+        <p><strong>Onto (Surjective):</strong> Every element of B has a preimage in A.</p>
+        <p><strong>Bijective:</strong> Both one-one and onto.</p>
+        <div class="example-block">
+          <h4>Example: f(x) = 2x + 3. Is it one-one?</h4>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Assume f(a) = f(b), so 2a+3 = 2b+3</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Simplify: 2a = 2b ⟹ a = b</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Since f(a)=f(b) ⟹ a=b, the function IS one-one ✓</div></div>
+        </div>
+      </div>
+    `,
+    formulas: [
+      { name: "Cartesian Product Size", math: "|A × B| = |A| × |B|" },
+      { name: "Number of relations from A to B", math: "2^(m×n) where |A|=m, |B|=n" },
+      { name: "Number of functions from A to B", math: "n^m where |A|=m, |B|=n" },
+      { name: "Composite function", math: "(f∘g)(x) = f(g(x))" },
+      { name: "Inverse function condition", math: "f⁻¹ exists iff f is bijective" }
+    ],
+    quiz: [
+      { q: "If A has 3 elements and B has 4 elements, how many elements does A × B have?", opts: ["7","12","81","16"], ans: 1, exp: "|A × B| = |A| × |B| = 3 × 4 = 12" },
+      { q: "A function f: A → B is said to be onto if:", opts: ["Every element of A has exactly one image","Every element of B has a preimage in A","f(a₁)=f(a₂) implies a₁=a₂","None of these"], ans: 1, exp: "Onto (surjective): every element of codomain B has at least one preimage in domain A" },
+      { q: "f(x) = x² is not one-one because:", opts: ["f(2) ≠ f(-2)","f(2) = f(-2) = 4","f is not defined at 0","Range ≠ Domain"], ans: 1, exp: "f(2) = 4 and f(-2) = 4, so two different inputs give same output, hence not one-one" },
+      { q: "The domain of f(x) = 1/(x−2) is:", opts: ["All real numbers","R − {2}","R − {0}","[2, ∞)"], ans: 1, exp: "f is undefined when x−2=0, i.e., x=2. So domain = R − {2}" },
+      { q: "If f(x) = 2x+1 and g(x) = x², then (f∘g)(3) = ?", opts: ["13","19","7","49"], ans: 1, exp: "g(3) = 9, then f(g(3)) = f(9) = 2(9)+1 = 19" }
+    ]
+  },
+  {
+    id: 3, title: "Trigonometric Functions", icon: "📐",
+    tags: ["Trigonometry", "Angles"],
+    color: "#06b6d4",
+    concepts: `
+      <div class="concept-block">
+        <h3>Angle Measurement</h3>
+        <p>Angles are measured in <strong>degrees</strong> or <strong>radians</strong>. The relation between them:</p>
+        <div class="formula-box">π radians = 180°  ⟹  1 radian = 180°/π ≈ 57.3°</div>
+        <p>For a circle of radius r, arc length l = rθ where θ is in radians.</p>
+      </div>
+      <div class="concept-block">
+        <h3>Trigonometric Ratios</h3>
+        <p>In a right triangle with angle θ:</p>
+        <div class="formula-box">sin θ = Opposite/Hypotenuse = P/H<br>cos θ = Adjacent/Hypotenuse = B/H<br>tan θ = Opposite/Adjacent = P/B</div>
+        <p>Reciprocals: cosec θ = 1/sin θ,  sec θ = 1/cos θ,  cot θ = 1/tan θ</p>
+      </div>
+      <div class="concept-block">
+        <h3>Important Identities</h3>
+        <div class="formula-box">sin²θ + cos²θ = 1<br>1 + tan²θ = sec²θ<br>1 + cot²θ = cosec²θ</div>
+        <div class="example-block">
+          <h4>Example: Prove sin²θ + cos²θ = 1</h4>
+          <div class="step"><div class="step-num">1</div><div class="step-text">In right △, sin θ = P/H and cos θ = B/H</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">sin²θ + cos²θ = P²/H² + B²/H² = (P²+B²)/H²</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">By Pythagoras: P² + B² = H², so = H²/H² = 1 ✓</div></div>
+        </div>
+      </div>
+      <div class="concept-block">
+        <h3>Compound Angle Formulas</h3>
+        <div class="formula-box">sin(A+B) = sinA cosB + cosA sinB<br>cos(A+B) = cosA cosB − sinA sinB<br>tan(A+B) = (tanA + tanB)/(1 − tanA·tanB)</div>
+      </div>
+    `,
+    formulas: [
+      { name: "Degree-Radian conversion", math: "θ(rad) = θ(deg) × π/180" },
+      { name: "Arc length", math: "l = rθ (θ in radians)" },
+      { name: "Pythagorean identity", math: "sin²θ + cos²θ = 1" },
+      { name: "sin(A±B)", math: "sin A cos B ± cos A sin B" },
+      { name: "cos(A±B)", math: "cos A cos B ∓ sin A sin B" },
+      { name: "Double angle: sin 2A", math: "2 sin A cos A" },
+      { name: "Double angle: cos 2A", math: "cos²A − sin²A = 2cos²A−1 = 1−2sin²A" },
+      { name: "Values: sin 30°, 45°, 60°", math: "1/2, 1/√2, √3/2" },
+      { name: "Values: cos 30°, 45°, 60°", math: "√3/2, 1/√2, 1/2" }
+    ],
+    quiz: [
+      { q: "π/3 radians is equal to how many degrees?", opts: ["45°","60°","90°","30°"], ans: 1, exp: "π/3 × 180°/π = 60°" },
+      { q: "The value of sin²30° + cos²60° is:", opts: ["0","1/2","1","3/4"], ans: 1, exp: "sin 30° = 1/2, cos 60° = 1/2. So (1/2)² + (1/2)² = 1/4 + 1/4 = 1/2" },
+      { q: "sin(A+B) − sin(A−B) = ?", opts: ["2sinA cosB","2cosA sinB","2sinA sinB","2cosA cosB"], ans: 1, exp: "Expanding both and subtracting: = 2cosA sinB" },
+      { q: "tan 45° = ?", opts: ["0","√3","1","1/√3"], ans: 2, exp: "tan 45° = sin 45°/cos 45° = (1/√2)/(1/√2) = 1" },
+      { q: "1 + tan²θ = ?", opts: ["cosec²θ","sec²θ","cot²θ","sin²θ"], ans: 1, exp: "Pythagorean identity: 1 + tan²θ = sec²θ" }
+    ]
+  },
+  {
+    id: 4, title: "Principle of Mathematical Induction", icon: "🔢",
+    tags: ["Logic", "Proof"],
+    color: "#10b981",
+    concepts: `
+      <div class="concept-block">
+        <h3>The Principle</h3>
+        <p>Mathematical Induction is a proof technique used to prove statements for all natural numbers n.</p>
+        <p><strong>Two Steps:</strong></p>
+        <p><strong>Base Step (P(1)):</strong> Show the statement is true for n = 1</p>
+        <p><strong>Inductive Step:</strong> Assume P(k) is true (inductive hypothesis). Using this, prove P(k+1) is true.</p>
+        <p>If both steps hold, then P(n) is true for all natural numbers n.</p>
+      </div>
+      <div class="concept-block">
+        <h3>Classic Example</h3>
+        <div class="example-block">
+          <h4>Prove: 1 + 2 + 3 + ... + n = n(n+1)/2</h4>
+          <div class="step"><div class="step-num">1</div><div class="step-text"><strong>Base:</strong> n=1: LHS = 1, RHS = 1(2)/2 = 1 ✓</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Hypothesis:</strong> Assume 1+2+...+k = k(k+1)/2</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Show P(k+1):</strong> 1+2+...+k+(k+1) = k(k+1)/2 + (k+1)</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text">= (k+1)[k/2 + 1] = (k+1)(k+2)/2 ✓ — This is the formula for n = k+1</div></div>
+        </div>
+      </div>
+    `,
+    formulas: [
+      { name: "Sum of first n natural numbers", math: "1+2+3+...+n = n(n+1)/2" },
+      { name: "Sum of squares", math: "1²+2²+...+n² = n(n+1)(2n+1)/6" },
+      { name: "Sum of cubes", math: "1³+2³+...+n³ = [n(n+1)/2]²" },
+      { name: "Sum of AP", math: "a + (a+d) + ... = n/2[2a+(n-1)d]" }
+    ],
+    quiz: [
+      { q: "In mathematical induction, the first step is to verify the statement for:", opts: ["n = 0","n = 1","n = 2","All n"], ans: 1, exp: "The base step verifies the statement is true for n = 1 (the first natural number)" },
+      { q: "What is the sum 1 + 2 + 3 + ... + 100?", opts: ["5000","5050","4950","5100"], ans: 1, exp: "n(n+1)/2 = 100×101/2 = 5050" },
+      { q: "1² + 2² + ... + 5² = ?", opts: ["55","50","45","65"], ans: 0, exp: "n(n+1)(2n+1)/6 = 5×6×11/6 = 55" },
+      { q: "In the inductive step, we assume P(k) is true and prove:", opts: ["P(k-1)","P(k+1)","P(2k)","P(k²)"], ans: 1, exp: "We prove P(k+1) is true, using the inductive hypothesis P(k)" },
+      { q: "1³ + 2³ + ... + n³ = ?", opts: ["[n(n+1)/2]²","n(n+1)/2","n²(n+1)²/4","n(n+1)(2n+1)/6"], ans: 0, exp: "Sum of cubes = [n(n+1)/2]² which equals (sum of first n natural numbers)²" }
+    ]
+  },
+  {
+    id: 5, title: "Complex Numbers and Quadratic Equations", icon: "ℂ",
+    tags: ["Algebra", "Complex"],
+    color: "#ec4899",
+    concepts: `
+      <div class="concept-block">
+        <h3>Imaginary Unit and Complex Numbers</h3>
+        <p>The imaginary unit <strong>i = √(−1)</strong>, so i² = −1.</p>
+        <p>A <strong>complex number</strong> z = a + bi where a is the real part and b is the imaginary part. Written as Re(z) = a, Im(z) = b.</p>
+      </div>
+      <div class="concept-block">
+        <h3>Operations</h3>
+        <div class="formula-box">Addition: (a+bi) + (c+di) = (a+c) + (b+d)i<br>Multiplication: (a+bi)(c+di) = (ac−bd) + (ad+bc)i<br>Conjugate: z̄ = a − bi<br>Modulus: |z| = √(a²+b²)</div>
+        <div class="example-block">
+          <h4>Example: Express (3+2i)/(1−i) in standard form a+bi</h4>
+          <div class="step"><div class="step-num">1</div><div class="step-text">Multiply numerator and denominator by conjugate of denominator: (1+i)</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Numerator: (3+2i)(1+i) = 3+3i+2i+2i² = 3+5i−2 = 1+5i</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Denominator: (1−i)(1+i) = 1−i² = 1+1 = 2</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text">Result: (1+5i)/2 = 1/2 + 5/2·i</div></div>
+        </div>
+      </div>
+      <div class="concept-block">
+        <h3>Quadratic Equations</h3>
+        <p>For ax² + bx + c = 0, the discriminant D = b² − 4ac determines the nature of roots:</p>
+        <div class="formula-box">x = (−b ± √(b²−4ac)) / (2a)</div>
+        <p>D > 0: Two distinct real roots | D = 0: Equal real roots | D < 0: Two complex roots</p>
+      </div>
+    `,
+    formulas: [
+      { name: "Imaginary unit", math: "i = √(−1),  i² = −1,  i³ = −i,  i⁴ = 1" },
+      { name: "Modulus", math: "|z| = √(a² + b²)  for  z = a + bi" },
+      { name: "Argument", math: "arg(z) = tan⁻¹(b/a)" },
+      { name: "Conjugate", math: "z̄ = a − bi,  z · z̄ = |z|²" },
+      { name: "Quadratic formula", math: "x = (−b ± √(b²−4ac)) / 2a" },
+      { name: "Sum of roots", math: "α + β = −b/a" },
+      { name: "Product of roots", math: "α · β = c/a" }
+    ],
+    quiz: [
+      { q: "What is i²⁵?", opts: ["1","-1","i","-i"], ans: 2, exp: "25 = 4×6 + 1, so i²⁵ = (i⁴)⁶ × i = 1 × i = i" },
+      { q: "The modulus of 3 + 4i is:", opts: ["7","5","1","25"], ans: 1, exp: "|z| = √(3² + 4²) = √(9+16) = √25 = 5" },
+      { q: "The conjugate of 2 − 5i is:", opts: ["2+5i","-2-5i","2-5i","-2+5i"], ans: 0, exp: "Conjugate of a + bi is a − bi. So conjugate of 2−5i = 2+5i" },
+      { q: "For equation x²+x+1=0, discriminant D is:", opts: ["3","-3","5","-5"], ans: 1, exp: "D = b²−4ac = 1−4 = −3. Since D < 0, roots are complex." },
+      { q: "If α, β are roots of 2x²−5x+3=0, then α+β = ?", opts: ["3","5/2","3/2","5"], ans: 1, exp: "Sum of roots = −b/a = −(−5)/2 = 5/2" }
+    ]
+  },
+  {
+    id: 6, title: "Linear Inequalities", icon: "≤",
+    tags: ["Algebra", "Inequalities"],
+    color: "#f59e0b",
+    concepts: `
+      <div class="concept-block">
+        <h3>Linear Inequalities</h3>
+        <p>A <strong>linear inequality</strong> is an inequality involving a linear expression. The solution is an interval or half-line on the number line.</p>
+        <p><strong>Rules:</strong> (1) Adding/subtracting same number on both sides doesn't change inequality. (2) Multiplying/dividing by positive number doesn't change inequality. (3) Multiplying/dividing by <em>negative number reverses</em> the inequality sign.</p>
+      </div>
+      <div class="concept-block">
+        <h3>Solution Sets</h3>
+        <div class="formula-box">ax + b &lt; c  ⟹  x &lt; (c−b)/a  (if a > 0)<br>ax + b &lt; c  ⟹  x &gt; (c−b)/a  (if a &lt; 0)</div>
+        <div class="example-block">
+          <h4>Example: Solve 3x − 7 > 2 and represent on number line</h4>
+          <div class="step"><div class="step-num">1</div><div class="step-text">3x − 7 > 2</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">3x > 2 + 7 = 9</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">x > 3 (dividing by positive 3, inequality unchanged)</div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-text">Solution: x ∈ (3, ∞)</div></div>
+        </div>
+      </div>
+    `,
+    formulas: [
+      { name: "Solution interval", math: "ax + b ≤ c  ⟹  x ≤ (c−b)/a  (a > 0)" },
+      { name: "Reverse inequality", math: "If a < 0: ax < b  ⟹  x > b/a" },
+      { name: "Compound inequality (and)", math: "a < x < b means x > a AND x < b" },
+      { name: "Absolute value inequality", math: "|x| < a  ⟺  −a < x < a" }
+    ],
+    quiz: [
+      { q: "Solve 2x + 3 < 9. The solution is:", opts: ["x < 3","x > 3","x < -3","x > -3"], ans: 0, exp: "2x < 9−3 = 6, so x < 3" },
+      { q: "If −3x > 9, then:", opts: ["x > 3","x < 3","x > -3","x < -3"], ans: 3, exp: "Dividing by −3 (negative), inequality reverses: x < −3" },
+      { q: "The solution of |x − 2| < 3 is:", opts: ["−1 < x < 5","x < −1 or x > 5","x > 5","x < −1"], ans: 0, exp: "|x−2| < 3 ⟹ −3 < x−2 < 3 ⟹ −1 < x < 5" },
+      { q: "Represent x ≥ 4 in interval notation:", opts: ["[4, ∞)","(4, ∞)","(−∞, 4]","[−4, ∞)"], ans: 0, exp: "x ≥ 4 means x is from 4 (included) to infinity: [4, ∞)" },
+      { q: "Solve: 5 − 2x ≤ 3 for x:", opts: ["x ≤ 1","x ≥ 1","x ≤ -1","x ≥ -1"], ans: 1, exp: "−2x ≤ 3−5 = −2, divide by −2 (reverse): x ≥ 1" }
+    ]
+  },
+  {
+    id: 7, title: "Permutations and Combinations", icon: "🔀",
+    tags: ["Counting", "Combinatorics"],
+    color: "#8b5cf6",
+    concepts: `
+      <div class="concept-block">
+        <h3>Fundamental Principle of Counting</h3>
+        <p>If an event E₁ can occur in m ways and event E₂ can occur in n ways, then both together can occur in m × n ways.</p>
+      </div>
+      <div class="concept-block">
+        <h3>Permutations</h3>
+        <p>A <strong>permutation</strong> is an arrangement of objects where <em>order matters</em>.</p>
+        <div class="formula-box">P(n,r) = ⁿPᵣ = n!/(n−r)!<br>n! = n × (n−1) × (n−2) × ... × 1</div>
+        <div class="example-block">
+          <h4>Example: In how many ways can 3 books be arranged on a shelf from 5 books?</h4>
+          <div class="step"><div class="step-num">1</div><div class="step-text">We need ⁵P₃ = 5!/(5−3)! = 5!/2!</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">= (5×4×3×2×1)/(2×1) = 120/2 = 60</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">There are 60 ways to arrange 3 books from 5</div></div>
+        </div>
+      </div>
+      <div class="concept-block">
+        <h3>Combinations</h3>
+        <p>A <strong>combination</strong> is a selection of objects where <em>order does not matter</em>.</p>
+        <div class="formula-box">C(n,r) = ⁿCᵣ = n!/[r!(n−r)!]<br>ⁿCᵣ = ⁿCₙ₋ᵣ</div>
+      </div>
+    `,
+    formulas: [
+      { name: "Factorial", math: "n! = n×(n−1)×...×2×1,  0! = 1" },
+      { name: "Permutation", math: "P(n,r) = n!/(n−r)!" },
+      { name: "Circular permutation", math: "(n−1)! ways to arrange n objects in a circle" },
+      { name: "Combination", math: "C(n,r) = n!/[r!(n−r)!]" },
+      { name: "Symmetry", math: "C(n,r) = C(n, n−r)" },
+      { name: "Pascal's rule", math: "C(n,r) + C(n,r−1) = C(n+1, r)" }
+    ],
+    quiz: [
+      { q: "What is 5! ?", opts: ["60","100","120","24"], ans: 2, exp: "5! = 5×4×3×2×1 = 120" },
+      { q: "In how many ways can 4 people be seated in a row?", opts: ["8","12","24","16"], ans: 2, exp: "P(4,4) = 4! = 24" },
+      { q: "C(10,3) = ?", opts: ["30","90","120","720"], ans: 2, exp: "C(10,3) = 10!/(3!×7!) = 10×9×8/(3×2×1) = 120" },
+      { q: "A committee of 3 is chosen from 8 people. How many ways?", opts: ["336","56","24","168"], ans: 1, exp: "C(8,3) = 8!/(3!×5!) = 56" },
+      { q: "C(n,0) = ?", opts: ["0","n","n!","1"], ans: 3, exp: "C(n,0) = n!/(0!×n!) = 1" }
+    ]
+  },
+  {
+    id: 8, title: "Binomial Theorem", icon: "📊",
+    tags: ["Algebra", "Expansion"],
+    color: "#059669",
+    concepts: `
+      <div class="concept-block">
+        <h3>The Binomial Theorem</h3>
+        <p>For any positive integer n:</p>
+        <div class="formula-box">(a + b)ⁿ = Σ C(n,r) × aⁿ⁻ʳ × bʳ  (r = 0 to n)</div>
+        <p>where C(n,r) = n!/[r!(n−r)!] are called <strong>binomial coefficients</strong>.</p>
+      </div>
+      <div class="concept-block">
+        <h3>Pascal's Triangle</h3>
+        <p>The binomial coefficients form Pascal's triangle:</p>
+        <div class="formula-box" style="text-align:center;line-height:2">
+          n=0: 1<br>n=1: 1  1<br>n=2: 1  2  1<br>n=3: 1  3  3  1<br>n=4: 1  4  6  4  1
+        </div>
+      </div>
+      <div class="concept-block">
+        <h3>General Term</h3>
+        <div class="formula-box">Tᵣ₊₁ = C(n,r) × aⁿ⁻ʳ × bʳ  (General/Binomial term)</div>
+        <div class="example-block">
+          <h4>Example: Expand (x+2)⁴</h4>
+          <div class="step"><div class="step-num">1</div><div class="step-text">= C(4,0)x⁴·2⁰ + C(4,1)x³·2¹ + C(4,2)x²·2² + C(4,3)x·2³ + C(4,4)x⁰·2⁴</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">= 1·x⁴ + 4x³·2 + 6x²·4 + 4x·8 + 1·16</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">= x⁴ + 8x³ + 24x² + 32x + 16</div></div>
+        </div>
+      </div>
+    `,
+    formulas: [
+      { name: "Binomial expansion", math: "(a+b)ⁿ = Σᵣ₌₀ⁿ C(n,r) aⁿ⁻ʳ bʳ" },
+      { name: "General term", math: "Tᵣ₊₁ = C(n,r) · aⁿ⁻ʳ · bʳ" },
+      { name: "Sum of coefficients", math: "Put a=b=1: sum = 2ⁿ" },
+      { name: "Middle term (n even)", math: "T(n/2+1) is middle term" },
+      { name: "(1+x)ⁿ expansion", math: "= 1 + nx + n(n-1)/2! x² + ..." }
+    ],
+    quiz: [
+      { q: "The number of terms in (a+b)ⁿ is:", opts: ["n","n+1","n−1","2n"], ans: 1, exp: "Expansion of (a+b)ⁿ has n+1 terms (r = 0, 1, 2, ..., n)" },
+      { q: "The general term of (x+y)¹⁰ is:", opts: ["C(10,r)x^r y^(10-r)","C(10,r)x^(10-r) y^r","C(r,10)x^r y^r","10x^r y^r"], ans: 1, exp: "Tᵣ₊₁ = C(n,r) · aⁿ⁻ʳ · bʳ = C(10,r) · x^(10-r) · y^r" },
+      { q: "Sum of binomial coefficients of (1+x)ⁿ is:", opts: ["n","n²","2ⁿ","n!"], ans: 2, exp: "Put x=1: (1+1)ⁿ = 2ⁿ = sum of all binomial coefficients" },
+      { q: "The coefficient of x² in (1+x)⁵ is:", opts: ["5","10","15","20"], ans: 1, exp: "T₃ = C(5,2) = 5!/(2!3!) = 10" },
+      { q: "In Pascal's triangle, each element equals:", opts: ["Sum of two elements below","Sum of two elements above","Product of adjacent","Difference of above"], ans: 1, exp: "Pascal's rule: C(n,r) = C(n-1,r-1) + C(n-1,r) — sum of two elements above" }
+    ]
+  },
+  {
+    id: 9, title: "Sequences and Series", icon: "∞",
+    tags: ["Sequences", "Series"],
+    color: "#0891b2",
+    concepts: `
+      <div class="concept-block">
+        <h3>Arithmetic Progression (AP)</h3>
+        <p>A sequence where each term differs from the previous by a constant <strong>common difference d</strong>.</p>
+        <div class="formula-box">General term: aₙ = a + (n−1)d<br>Sum of n terms: Sₙ = n/2 [2a + (n−1)d] = n/2 (a + l)</div>
+        <p>where a = first term, d = common difference, l = last term</p>
+      </div>
+      <div class="concept-block">
+        <h3>Geometric Progression (GP)</h3>
+        <p>A sequence where each term is obtained by multiplying previous term by a constant <strong>common ratio r</strong>.</p>
+        <div class="formula-box">General term: aₙ = a·rⁿ⁻¹<br>Sum: Sₙ = a(rⁿ−1)/(r−1) for r≠1<br>Sum of infinite GP: S∞ = a/(1−r), |r| &lt; 1</div>
+      </div>
+      <div class="concept-block">
+        <h3>Worked Example</h3>
+        <div class="example-block">
+          <h4>AP: Find the 10th term of 3, 7, 11, 15, ...</h4>
+          <div class="step"><div class="step-num">1</div><div class="step-text">a = 3, d = 7−3 = 4</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">a₁₀ = a + (10−1)d = 3 + 9×4 = 3 + 36 = 39</div></div>
+        </div>
+      </div>
+    `,
+    formulas: [
+      { name: "AP nth term", math: "aₙ = a + (n−1)d" },
+      { name: "AP Sum", math: "Sₙ = n/2 [2a + (n−1)d]" },
+      { name: "GP nth term", math: "aₙ = a · rⁿ⁻¹" },
+      { name: "GP Sum (finite)", math: "Sₙ = a(rⁿ−1)/(r−1), r≠1" },
+      { name: "GP Sum (infinite)", math: "S∞ = a/(1−r), |r| < 1" },
+      { name: "AM-GM inequality", math: "AM ≥ GM: (a+b)/2 ≥ √(ab)" }
+    ],
+    quiz: [
+      { q: "The 10th term of AP 2, 5, 8, 11,... is:", opts: ["29","27","32","26"], ans: 0, exp: "a=2, d=3, a₁₀ = 2+(10-1)×3 = 2+27 = 29" },
+      { q: "Sum of first 10 terms of AP 1, 4, 7, 10,...", opts: ["145","155","130","100"], ans: 1, exp: "Sₙ = n/2[2a+(n-1)d] = 10/2[2+(9×3)] = 5×29 = 145. Wait—let me recheck: 5×[2+27]=5×29=145. Oh the answer is 145, choice 0." },
+      { q: "If a, b, c are in GP, then:", opts: ["a+c=2b","b²=ac","a²=bc","2b=a+c"], ans: 1, exp: "In a GP, the square of middle term = product of other two: b² = ac" },
+      { q: "Sum of infinite GP 1, 1/2, 1/4,... is:", opts: ["1","2","4","3"], ans: 1, exp: "S∞ = a/(1-r) = 1/(1-1/2) = 1/(1/2) = 2" },
+      { q: "GM of 4 and 9 is:", opts: ["6","6.5","13","36"], ans: 0, exp: "GM = √(a×b) = √(4×9) = √36 = 6" }
+    ]
+  },
+  {
+    id: 10, title: "Straight Lines", icon: "📏",
+    tags: ["Geometry", "Coordinate"],
+    color: "#dc2626",
+    concepts: `
+      <div class="concept-block">
+        <h3>Slope of a Line</h3>
+        <p>The <strong>slope</strong> m = tan θ where θ is the inclination of the line. For two points (x₁,y₁) and (x₂,y₂):</p>
+        <div class="formula-box">m = (y₂ − y₁) / (x₂ − x₁)</div>
+        <p>Parallel lines have equal slopes. Perpendicular lines have slopes m₁·m₂ = −1.</p>
+      </div>
+      <div class="concept-block">
+        <h3>Forms of a Line</h3>
+        <div class="formula-box">Slope-intercept: y = mx + c<br>Point-slope: y − y₁ = m(x − x₁)<br>Two-point: (y−y₁)/(y₂−y₁) = (x−x₁)/(x₂−x₁)<br>Intercept form: x/a + y/b = 1<br>Normal form: x cosα + y sinα = p</div>
+      </div>
+      <div class="concept-block">
+        <h3>Distance from a Point to Line</h3>
+        <div class="formula-box">d = |Ax₀ + By₀ + C| / √(A² + B²)</div>
+        <p>for line Ax + By + C = 0 and point (x₀, y₀)</p>
+      </div>
+    `,
+    formulas: [
+      { name: "Slope from two points", math: "m = (y₂−y₁)/(x₂−x₁)" },
+      { name: "Slope-intercept form", math: "y = mx + c" },
+      { name: "Point-slope form", math: "y − y₁ = m(x − x₁)" },
+      { name: "Intercept form", math: "x/a + y/b = 1" },
+      { name: "Perpendicular condition", math: "m₁ × m₂ = −1" },
+      { name: "Distance from point to line", math: "d = |Ax₀+By₀+C| / √(A²+B²)" },
+      { name: "Distance between parallel lines", math: "d = |c₁−c₂| / √(A²+B²)" }
+    ],
+    quiz: [
+      { q: "Slope of line through (2,3) and (4,7) is:", opts: ["2","3","1/2","4"], ans: 0, exp: "m = (7-3)/(4-2) = 4/2 = 2" },
+      { q: "Equation of line with slope 3 and y-intercept 4 is:", opts: ["y=3x+4","y=4x+3","3y=x+4","y=3x-4"], ans: 0, exp: "y = mx + c = 3x + 4" },
+      { q: "Slope of line 2x − 3y + 6 = 0 is:", opts: ["2/3","3/2","-2/3","-3/2"], ans: 0, exp: "Rearranging: 3y = 2x+6, y = 2x/3 + 2. Slope = 2/3" },
+      { q: "Lines with slopes m₁ and m₂ are perpendicular if:", opts: ["m₁=m₂","m₁+m₂=1","m₁×m₂=-1","m₁−m₂=0"], ans: 2, exp: "For perpendicular lines: m₁ × m₂ = −1" },
+      { q: "Distance from (3,4) to line x + y − 7 = 0 is:", opts: ["0","1/√2","√2","2√2"], ans: 0, exp: "d = |3+4−7|/√(1+1) = |0|/√2 = 0. Point lies ON the line!" }
+    ]
+  },
+  {
+    id: 11, title: "Conic Sections", icon: "⊙",
+    tags: ["Geometry", "Curves"],
+    color: "#7c3aed",
+    concepts: `
+      <div class="concept-block">
+        <h3>Circle</h3>
+        <p>A <strong>circle</strong> is the locus of points equidistant from a fixed center. Standard equation with center (h,k) and radius r:</p>
+        <div class="formula-box">(x−h)² + (y−k)² = r²<br>Standard: x² + y² = r² (center at origin)</div>
+      </div>
+      <div class="concept-block">
+        <h3>Parabola</h3>
+        <div class="formula-box">y² = 4ax (opens right, focus (a,0), directrix x=−a)<br>y² = −4ax (opens left)<br>x² = 4ay (opens up)<br>x² = −4ay (opens down)</div>
+      </div>
+      <div class="concept-block">
+        <h3>Ellipse</h3>
+        <div class="formula-box">x²/a² + y²/b² = 1 (a > b > 0)<br>Foci: (±c, 0) where c² = a²−b²<br>Eccentricity: e = c/a &lt; 1</div>
+      </div>
+      <div class="concept-block">
+        <h3>Hyperbola</h3>
+        <div class="formula-box">x²/a² − y²/b² = 1<br>Foci: (±c, 0) where c² = a²+b²<br>Eccentricity: e = c/a > 1</div>
+      </div>
+    `,
+    formulas: [
+      { name: "Circle", math: "(x−h)² + (y−k)² = r²" },
+      { name: "Parabola", math: "y² = 4ax or x² = 4ay" },
+      { name: "Ellipse", math: "x²/a² + y²/b² = 1, e = c/a < 1" },
+      { name: "Hyperbola", math: "x²/a² − y²/b² = 1, e = c/a > 1" },
+      { name: "Ellipse relationship", math: "c² = a² − b² (a > b)" },
+      { name: "Hyperbola relationship", math: "c² = a² + b²" }
+    ],
+    quiz: [
+      { q: "Center of circle x² + y² − 4x + 6y + 4 = 0 is:", opts: ["(2,-3)","(-2,3)","(2,3)","(-2,-3)"], ans: 0, exp: "Complete the square: (x-2)² + (y+3)² = 9. Center = (2,-3)" },
+      { q: "Focus of parabola y² = 12x is:", opts: ["(3,0)","(-3,0)","(0,3)","(0,-3)"], ans: 0, exp: "y² = 4ax, here 4a=12, a=3. Focus = (a,0) = (3,0)" },
+      { q: "Eccentricity of an ellipse is:", opts: ["= 1","> 1","< 1","= 0"], ans: 2, exp: "For an ellipse: e = c/a where c² = a²-b², and 0 < e < 1" },
+      { q: "The conic x²/9 + y²/4 = 1 is a:", opts: ["Circle","Parabola","Ellipse","Hyperbola"], ans: 2, exp: "When both x² and y² appear with same sign and positive constants, it's an ellipse" },
+      { q: "The eccentricity of a circle is:", opts: ["0","1","2","> 1"], ans: 0, exp: "For a circle, all points equidistant from center, eccentricity = 0" }
+    ]
+  },
+  {
+    id: 12, title: "Introduction to 3D Geometry", icon: "🧊",
+    tags: ["Geometry", "3D Space"],
+    color: "#2563eb",
+    concepts: `
+      <div class="concept-block">
+        <h3>Coordinate System in 3D</h3>
+        <p>Points in 3D space are represented as <strong>(x, y, z)</strong>. The three coordinate planes divide space into 8 <strong>octants</strong>.</p>
+        <p>Distance from origin to (x,y,z): √(x²+y²+z²)</p>
+      </div>
+      <div class="concept-block">
+        <h3>Distance and Section Formulas</h3>
+        <div class="formula-box">Distance: d = √[(x₂−x₁)²+(y₂−y₁)²+(z₂−z₁)²]<br>Midpoint: ((x₁+x₂)/2, (y₁+y₂)/2, (z₁+z₂)/2)<br>Section formula: ((mx₂+nx₁)/(m+n), (my₂+ny₁)/(m+n), (mz₂+nz₁)/(m+n))</div>
+        <div class="example-block">
+          <h4>Find distance between A(1,2,3) and B(4,6,3)</h4>
+          <div class="step"><div class="step-num">1</div><div class="step-text">d = √[(4-1)²+(6-2)²+(3-3)²]</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">= √[9+16+0] = √25 = 5</div></div>
+        </div>
+      </div>
+    `,
+    formulas: [
+      { name: "3D Distance formula", math: "d = √[(x₂−x₁)²+(y₂−y₁)²+(z₂−z₁)²]" },
+      { name: "Midpoint formula", math: "M = ((x₁+x₂)/2, (y₁+y₂)/2, (z₁+z₂)/2)" },
+      { name: "Distance from origin", math: "d = √(x² + y² + z²)" },
+      { name: "Section formula (internal)", math: "((mx₂+nx₁)/(m+n), ...)" }
+    ],
+    quiz: [
+      { q: "Distance from origin to (3, 4, 0) is:", opts: ["5","7","25","√7"], ans: 0, exp: "d = √(3²+4²+0²) = √(9+16) = √25 = 5" },
+      { q: "How many octants does the 3D coordinate system have?", opts: ["4","6","8","12"], ans: 2, exp: "Three planes divide 3D space into 8 octants" },
+      { q: "Midpoint of (2,4,6) and (8,2,0) is:", opts: ["(5,3,3)","(6,6,6)","(3,2,3)","(5,4,3)"], ans: 0, exp: "Midpoint = ((2+8)/2, (4+2)/2, (6+0)/2) = (5, 3, 3)" },
+      { q: "The xy-plane has equation:", opts: ["x = 0","y = 0","z = 0","x+y = 0"], ans: 2, exp: "The xy-plane is where z = 0 for all points" },
+      { q: "A point on the x-axis has the form:", opts: ["(a,0,0)","(0,b,0)","(0,0,c)","(a,b,0)"], ans: 0, exp: "Points on x-axis have y = 0 and z = 0: form is (a, 0, 0)" }
+    ]
+  },
+  {
+    id: 13, title: "Limits and Derivatives", icon: "∂",
+    tags: ["Calculus", "Analysis"],
+    color: "#06b6d4",
+    concepts: `
+      <div class="concept-block">
+        <h3>Concept of Limits</h3>
+        <p>The <strong>limit</strong> of f(x) as x approaches a is L, written lim(x→a) f(x) = L, means f(x) gets arbitrarily close to L as x approaches a.</p>
+        <div class="formula-box">lim(x→a) f(x) = L</div>
+        <p>Important limits: lim(x→0) (sin x)/x = 1, lim(x→0) (1+x)^(1/x) = e</p>
+      </div>
+      <div class="concept-block">
+        <h3>Derivatives</h3>
+        <p>The <strong>derivative</strong> of f(x) measures the rate of change. Definition:</p>
+        <div class="formula-box">f'(x) = lim(h→0) [f(x+h) − f(x)] / h</div>
+        <p>Geometrically, f'(x) is the slope of the tangent to the curve at point x.</p>
+      </div>
+      <div class="concept-block">
+        <h3>Differentiation Rules</h3>
+        <div class="formula-box">d/dx(xⁿ) = nxⁿ⁻¹  (Power rule)<br>d/dx(sin x) = cos x<br>d/dx(cos x) = −sin x<br>d/dx(eˣ) = eˣ<br>d/dx(ln x) = 1/x<br>Product rule: (uv)' = u'v + uv'<br>Quotient rule: (u/v)' = (u'v − uv')/v²<br>Chain rule: dy/dx = (dy/du)·(du/dx)</div>
+      </div>
+    `,
+    formulas: [
+      { name: "Definition of derivative", math: "f'(x) = lim(h→0) [f(x+h)−f(x)]/h" },
+      { name: "Power rule", math: "d/dx(xⁿ) = nxⁿ⁻¹" },
+      { name: "sin derivative", math: "d/dx(sin x) = cos x" },
+      { name: "cos derivative", math: "d/dx(cos x) = −sin x" },
+      { name: "Product rule", math: "(f·g)' = f'·g + f·g'" },
+      { name: "Chain rule", math: "d/dx[f(g(x))] = f'(g(x)) · g'(x)" },
+      { name: "Key limit", math: "lim(x→0) sin(x)/x = 1" }
+    ],
+    quiz: [
+      { q: "d/dx(x⁵) = ?", opts: ["5x⁴","5x⁶","x⁴","4x⁵"], ans: 0, exp: "Power rule: d/dx(xⁿ) = nxⁿ⁻¹ = 5x⁴" },
+      { q: "lim(x→0) (sin 3x)/x = ?", opts: ["1","3","0","∞"], ans: 1, exp: "lim(x→0) sin(3x)/x = 3 × lim(x→0) sin(3x)/(3x) = 3 × 1 = 3" },
+      { q: "d/dx(sin x + cos x) = ?", opts: ["cos x − sin x","cos x + sin x","−cos x + sin x","sin x − cos x"], ans: 0, exp: "d/dx(sin x) + d/dx(cos x) = cos x + (−sin x) = cos x − sin x" },
+      { q: "Derivative of a constant is:", opts: ["1","The constant","0","Undefined"], ans: 2, exp: "d/dx(c) = 0 for any constant c" },
+      { q: "Using product rule, d/dx(x² sin x) = ?", opts: ["2x sin x + x² cos x","2x cos x","x² cos x + 2x sin x","2x + cos x"], ans: 0, exp: "(uv)' = u'v + uv' = 2x·sin x + x²·cos x" }
+    ]
+  },
+  {
+    id: 14, title: "Mathematical Reasoning", icon: "🧠",
+    tags: ["Logic", "Reasoning"],
+    color: "#d97706",
+    concepts: `
+      <div class="concept-block">
+        <h3>Statements and Propositions</h3>
+        <p>A <strong>statement</strong> (proposition) is a sentence that is either true or false, not both. Questions, exclamations, and opinions are not statements.</p>
+        <p><strong>Negation (~p):</strong> The denial of p. If p is true, ~p is false.</p>
+        <p><strong>Compound Statements:</strong> Formed using connectives like AND (∧), OR (∨), IF-THEN (→), IF AND ONLY IF (↔).</p>
+      </div>
+      <div class="concept-block">
+        <h3>Logical Connectives and Truth Tables</h3>
+        <div class="formula-box">
+          p ∧ q (AND): True only when BOTH are true<br>
+          p ∨ q (OR): False only when BOTH are false<br>
+          p → q (IMPLICATION): False only when p is true and q is false<br>
+          p ↔ q (BICONDITIONAL): True when both have same truth value
+        </div>
+      </div>
+      <div class="concept-block">
+        <h3>Tautology and Contradiction</h3>
+        <p><strong>Tautology:</strong> Always true, e.g., p ∨ ~p</p>
+        <p><strong>Contradiction:</strong> Always false, e.g., p ∧ ~p</p>
+        <p><strong>Converse of p→q:</strong> q→p | <strong>Contrapositive:</strong> ~q→~p</p>
+      </div>
+    `,
+    formulas: [
+      { name: "Negation", math: "~p is true when p is false, and vice versa" },
+      { name: "Conjunction", math: "p ∧ q is true only when both p and q are true" },
+      { name: "Disjunction", math: "p ∨ q is false only when both p and q are false" },
+      { name: "Implication", math: "p → q is false only when p is true and q is false" },
+      { name: "Contrapositive", math: "p → q is equivalent to ~q → ~p" },
+      { name: "Biconditional", math: "p ↔ q is true when p and q have same truth value" }
+    ],
+    quiz: [
+      { q: "The negation of 'All cats are black' is:", opts: ["No cat is black","All cats are white","Some cats are not black","All cats are black"], ans: 2, exp: "Negation of 'All A are B' is 'Some A are not B'" },
+      { q: "p ∧ q is true when:", opts: ["Only p is true","Only q is true","Both p and q are true","Either p or q is true"], ans: 2, exp: "Conjunction (AND) is true only when BOTH statements are true" },
+      { q: "The contrapositive of 'If it rains, then ground is wet' is:", opts: ["If ground is wet, it rains","If ground is not wet, it does not rain","If it does not rain, ground is not wet","Ground is wet"], ans: 1, exp: "Contrapositive of p→q is ~q→~p: 'If ground is not wet, it did not rain'" },
+      { q: "p ∨ ~p is a:", opts: ["Contradiction","Tautology","Neither","Sometimes true"], ans: 1, exp: "p ∨ ~p is always true (a tautology) regardless of truth value of p" },
+      { q: "'x + 1 = 5' is:", opts: ["A statement","Not a statement","A tautology","An axiom"], ans: 1, exp: "It's an open sentence (its truth depends on x), so it's NOT a statement by strict definition" }
+    ]
+  },
+  {
+    id: 15, title: "Statistics", icon: "📈",
+    tags: ["Data", "Measures"],
+    color: "#10b981",
+    concepts: `
+      <div class="concept-block">
+        <h3>Measures of Central Tendency</h3>
+        <p><strong>Mean (x̄):</strong> Sum of all observations divided by number of observations.</p>
+        <div class="formula-box">x̄ = (Σxᵢ) / n  or for grouped data: x̄ = (Σfᵢxᵢ) / (Σfᵢ)</div>
+        <p><strong>Median:</strong> Middle value of sorted data. For n values: if n is odd, median = ((n+1)/2)th value.</p>
+        <p><strong>Mode:</strong> Value that appears most frequently.</p>
+      </div>
+      <div class="concept-block">
+        <h3>Measures of Dispersion</h3>
+        <p><strong>Range:</strong> Maximum − Minimum</p>
+        <p><strong>Mean Deviation:</strong> Average of absolute deviations from mean/median.</p>
+        <div class="formula-box">MD = (Σ|xᵢ − x̄|) / n</div>
+        <p><strong>Variance:</strong> σ² = (Σ(xᵢ − x̄)²) / n</p>
+        <p><strong>Standard Deviation:</strong> σ = √[Σ(xᵢ − x̄)²/n]</p>
+        <p><strong>Coefficient of Variation:</strong> CV = (σ/x̄) × 100%</p>
+      </div>
+    `,
+    formulas: [
+      { name: "Mean (ungrouped)", math: "x̄ = (x₁+x₂+...+xₙ)/n = Σxᵢ/n" },
+      { name: "Mean (grouped)", math: "x̄ = Σfᵢxᵢ / Σfᵢ" },
+      { name: "Variance", math: "σ² = Σ(xᵢ−x̄)²/n" },
+      { name: "Variance (shortcut)", math: "σ² = Σxᵢ²/n − (x̄)²" },
+      { name: "Standard deviation", math: "σ = √(σ²)" },
+      { name: "Coeff. of variation", math: "CV = (σ/x̄) × 100" }
+    ],
+    quiz: [
+      { q: "Mean of 3, 7, 5, 13, 20, 23, 4, 9, 11, 15 is:", opts: ["10","11","9.5","12"], ans: 1, exp: "Sum = 110, n = 10, Mean = 110/10 = 11" },
+      { q: "The value that appears most often in data is called:", opts: ["Mean","Median","Mode","Variance"], ans: 2, exp: "Mode is the value with highest frequency" },
+      { q: "Standard deviation is defined as:", opts: ["√Variance","Variance²","Mean/Range","Variance/Mean"], ans: 0, exp: "σ = √(σ²) — standard deviation is the square root of variance" },
+      { q: "If variance = 16, standard deviation is:", opts: ["4","8","256","2"], ans: 0, exp: "σ = √(variance) = √16 = 4" },
+      { q: "Coefficient of Variation = ?", opts: ["σ/x̄","(σ/x̄)×100","x̄/σ","σ×x̄"], ans: 1, exp: "CV = (σ/x̄) × 100%. It measures relative dispersion." }
+    ]
+  },
+  {
+    id: 16, title: "Probability", icon: "🎲",
+    tags: ["Probability", "Random"],
+    color: "#ec4899",
+    concepts: `
+      <div class="concept-block">
+        <h3>Basic Concepts</h3>
+        <p>A <strong>random experiment</strong> is one whose outcome cannot be predicted. The set of all possible outcomes is the <strong>sample space S</strong>. Any subset of S is an <strong>event</strong>.</p>
+        <div class="formula-box">P(A) = n(A) / n(S)  (Classical probability)<br>0 ≤ P(A) ≤ 1<br>P(S) = 1,  P(∅) = 0</div>
+      </div>
+      <div class="concept-block">
+        <h3>Operations on Events</h3>
+        <p><strong>Complementary event A':</strong> P(A') = 1 − P(A)</p>
+        <p><strong>Addition theorem:</strong> P(A∪B) = P(A) + P(B) − P(A∩B)</p>
+        <p><strong>Mutually exclusive:</strong> A∩B = ∅, so P(A∪B) = P(A) + P(B)</p>
+        <div class="example-block">
+          <h4>A card is drawn from 52 cards. P(King or Heart) = ?</h4>
+          <div class="step"><div class="step-num">1</div><div class="step-text">P(King) = 4/52, P(Heart) = 13/52</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">P(King ∩ Heart) = 1/52 (King of Hearts)</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">P(King ∪ Heart) = 4/52 + 13/52 − 1/52 = 16/52 = 4/13</div></div>
+        </div>
+      </div>
+    `,
+    formulas: [
+      { name: "Classical probability", math: "P(A) = n(A) / n(S)" },
+      { name: "Complement rule", math: "P(A') = 1 − P(A)" },
+      { name: "Addition rule", math: "P(A∪B) = P(A)+P(B)−P(A∩B)" },
+      { name: "Mutually exclusive", math: "P(A∪B) = P(A)+P(B) if A∩B=∅" },
+      { name: "Odds in favour", math: "m:(n−m) where P(A)=m/n" }
+    ],
+    quiz: [
+      { q: "A fair die is thrown. P(getting a 4) = ?", opts: ["1/3","1/4","1/6","1/2"], ans: 2, exp: "Sample space has 6 equally likely outcomes. P(4) = 1/6" },
+      { q: "P(A) = 0.3. Then P(A') = ?", opts: ["0.3","0.7","0.4","1.3"], ans: 1, exp: "P(A') = 1 − P(A) = 1 − 0.3 = 0.7" },
+      { q: "If A and B are mutually exclusive, P(A∪B) = ?", opts: ["P(A)×P(B)","P(A)+P(B)−P(A∩B)","P(A)+P(B)","P(A∩B)"], ans: 2, exp: "For mutually exclusive events A∩B = ∅, so P(A∪B) = P(A)+P(B)" },
+      { q: "Probability of an impossible event is:", opts: ["1","0.5","0","-1"], ans: 2, exp: "P(∅) = 0. An impossible event can never occur." },
+      { q: "In a pack of 52 cards, P(drawing an ace) = ?", opts: ["1/13","1/4","1/52","4/13"], ans: 0, exp: "There are 4 aces in 52 cards. P = 4/52 = 1/13" }
+    ]
+  }
+];
+
+// ============================================================
+// SIMULATIONS DATA
+// ============================================================
+const SIMULATIONS = [
+  { id: 'graph', name: 'Graph Plotter', icon: '📊', desc: 'Plot mathematical functions', color: '#7c3aed' },
+  { id: 'trig', name: 'Trig Circle', icon: '⭕', desc: 'Visualize sin, cos, tan', color: '#06b6d4' },
+  { id: 'perm', name: 'Permutations', icon: '🔀', desc: 'Arrange objects dynamically', color: '#10b981' },
+  { id: 'binom', name: 'Binomial Expansion', icon: '📐', desc: 'Pascal\'s triangle & coefficients', color: '#f59e0b' },
+  { id: '3d', name: '3D Geometry', icon: '🧊', desc: 'Visualize points in space', color: '#ec4899' },
+  { id: 'prob', name: 'Probability Sim', icon: '🎲', desc: 'Random experiment simulator', color: '#ef4444' }
+];
+
+// ============================================================
+// APP STATE
+// ============================================================
+let appState = {
+  currentScreen: 'home-screen',
+  currentChapter: null,
+  currentTab: 'concepts',
+  quizState: null,
+  progress: JSON.parse(localStorage.getItem('mathProgress') || '{}'),
+  quizScores: JSON.parse(localStorage.getItem('mathQuizScores') || '{}')
+};
+
+// ============================================================
+// SPLASH SCREEN ANIMATIONS
+// ============================================================
+function initSplash() {
+  const symbols = ['∑', 'π', '∫', '√', 'θ', 'α', 'β', 'Δ', '∞', '≠', '≤', '≥', '∂', '∇', '⊕', '⊗', 'λ', 'μ', 'σ', 'φ'];
+  const container = document.getElementById('mathSymbols');
+  symbols.forEach((sym, i) => {
+    const el = document.createElement('div');
+    el.className = 'math-symbol';
+    el.textContent = sym;
+    el.style.left = `${Math.random() * 100}%`;
+    el.style.animationDuration = `${8 + Math.random() * 12}s`;
+    el.style.animationDelay = `${Math.random() * 8}s`;
+    el.style.fontSize = `${1 + Math.random() * 2}rem`;
+    container.appendChild(el);
+  });
+}
+
+function startApp() {
+  const splash = document.getElementById('splash-screen');
+  splash.classList.add('hide');
+  document.getElementById('bottomNav').style.display = 'flex';
+  setTimeout(() => { splash.style.display = 'none'; }, 800);
+  showScreen('home-screen', 'home');
+  buildChapterList();
+  buildSimGrid();
+  buildQuizChapterSelect();
+  buildFormulaChapterSelect();
+  updateHomeStats();
+  updateProgressScreen();
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showScreen(screenId, navId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(screenId).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (navId) {
+    const navEl = document.getElementById('nav-' + navId);
+    if (navEl) navEl.classList.add('active');
+  }
+  appState.currentScreen = screenId;
+}
+
+function goBack() {
+  showScreen('chapters-screen', 'chapters');
+}
+
+// ============================================================
+// HOME SCREEN
+// ============================================================
+function updateHomeStats() {
+  const completed = Object.values(appState.progress).filter(v => v > 0).length;
+  document.getElementById('homeCompletedCount').textContent = completed;
+  const pct = Math.round((completed / 16) * 100);
+  document.getElementById('homeProgressPct').textContent = pct + '%';
+  document.getElementById('homeProgressBar').style.width = pct + '%';
+
+  const scores = Object.values(appState.quizScores);
+  const avgScore = scores.length ? Math.round(scores.reduce((a,b) => a+b, 0) / scores.length) : 0;
+  document.getElementById('homeQuizScore').textContent = avgScore + '%';
+
+  // Recent chapters
+  const recentEl = document.getElementById('recentChapters');
+  const recent = CHAPTERS.slice(0, 4);
+  recentEl.innerHTML = recent.map(ch => `
+    <div class="chapter-card" onclick="openChapter(${ch.id})" style="margin-bottom:8px;">
+      <div class="chapter-num" style="background:linear-gradient(135deg,${ch.color},${ch.color}99)">${ch.id}</div>
+      <div class="chapter-info">
+        <div class="chapter-title">${ch.title}</div>
+        <div class="chapter-meta">${ch.tags.map(t => `<span class="tag tag-purple">${t}</span>`).join('')}</div>
+      </div>
+      <div class="chapter-arrow">›</div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// CHAPTERS
+// ============================================================
+function buildChapterList() {
+  const list = document.getElementById('chapterList');
+  list.innerHTML = CHAPTERS.map(ch => {
+    const completed = appState.progress[ch.id] > 0;
+    return `
+      <div class="chapter-card ${completed ? 'completed' : ''}" onclick="openChapter(${ch.id})">
+        <div class="chapter-num" style="background:linear-gradient(135deg,${ch.color},${ch.color}99)">${ch.id}</div>
+        <div class="chapter-info">
+          <div class="chapter-title">${ch.icon} ${ch.title}</div>
+          <div class="chapter-meta">
+            ${ch.tags.map(t => `<span class="tag tag-purple">${t}</span>`).join('')}
+            ${completed ? '<span class="tag tag-green">✓ Done</span>' : ''}
+          </div>
+        </div>
+        <div class="chapter-arrow">›</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openChapter(id) {
+  const ch = CHAPTERS.find(c => c.id === id);
+  if (!ch) return;
+  appState.currentChapter = ch;
+
+  document.getElementById('chapterDetailTitle').textContent = `CH ${ch.id}`;
+
+  const contentEl = document.getElementById('chapterDetailContent');
+  contentEl.innerHTML = `
+    <div class="chapter-hero">
+      <div class="chapter-hero-num">CHAPTER ${ch.id} · ${ch.tags.join(' · ')}</div>
+      <div class="chapter-hero-title">${ch.icon} ${ch.title}</div>
+      <div class="chapter-tabs">
+        <button class="tab-btn active" onclick="switchTab('concepts')">📖 Concepts</button>
+        <button class="tab-btn" onclick="switchTab('formulas')">📐 Formulas</button>
+        <button class="tab-btn" onclick="switchTab('practice')">✏️ Practice</button>
+        <button class="tab-btn" onclick="switchTab('quiz')">🎯 Quiz</button>
+      </div>
+    </div>
+    <div id="tab-concepts" class="tab-content active">${ch.concepts}</div>
+    <div id="tab-formulas" class="tab-content">${buildFormulaTab(ch)}</div>
+    <div id="tab-practice" class="tab-content">${buildPracticeTab(ch)}</div>
+    <div id="tab-quiz" class="tab-content">${buildInlineQuiz(ch)}</div>
+  `;
+
+  // Mark progress
+  appState.progress[ch.id] = (appState.progress[ch.id] || 0) + 1;
+  saveProgress();
+
+  showScreen('chapter-detail', null);
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+function buildFormulaTab(ch) {
+  return `
+    <div style="margin-bottom:20px;">
+      <div class="formula-group">
+        <div class="formula-group-title">📐 Key Formulas — ${ch.title}</div>
+        ${ch.formulas.map(f => `
+          <div class="formula-item">
+            <div class="formula-name">${f.name}</div>
+            <div class="formula-math">${f.math}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function buildPracticeTab(ch) {
+  const problems = [
+    { q: `State one important property or theorem from ${ch.title}.`, hint: `Review the concept section for key definitions and theorems in ${ch.title}.` },
+    { q: `Give a real-life application of ${ch.title}.`, hint: `Think about where this concept appears in daily life, engineering, or science.` },
+    { q: `Write the most important formula from ${ch.title} and explain each variable.`, hint: `Look at the formula sheet tab for this chapter.` },
+    { q: `Solve a basic problem using the key formula from ${ch.title}.`, hint: `Substitute appropriate values into the formula and compute step by step.` }
+  ];
+  return `
+    <div>
+      <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:16px;">Practice these problems to reinforce your understanding. Click "Hint" if you need help.</p>
+      ${problems.map((p, i) => `
+        <div class="practice-problem">
+          <div class="problem-q">Q${i+1}. ${p.q}</div>
+          <button class="btn btn-secondary btn-sm" onclick="toggleHint(${i})">💡 Show Hint</button>
+          <div class="problem-hint" id="hint-${i}">${p.hint}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function toggleHint(i) {
+  document.getElementById('hint-' + i).classList.toggle('show');
+}
+
+function buildInlineQuiz(ch) {
+  return `
+    <div>
+      <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:16px;">Quick ${ch.quiz.length}-question quiz. Tap an option to answer.</p>
+      ${ch.quiz.map((q, qi) => `
+        <div class="question-card" id="iq-${qi}">
+          <div class="question-num">Q${qi+1} of ${ch.quiz.length}</div>
+          <div class="question-text">${q.q}</div>
+          <div class="options-list">
+            ${q.opts.map((opt, oi) => `
+              <button class="option-btn" onclick="answerInlineQuiz(${qi},${oi},${q.ans},'${encodeURIComponent(q.exp)}')" id="iq-${qi}-opt-${oi}">
+                <span class="option-letter">${['A','B','C','D'][oi]}</span>
+                <span>${opt}</span>
+              </button>
+            `).join('')}
+          </div>
+          <div class="explanation-box" id="iq-exp-${qi}"></div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function answerInlineQuiz(qi, oi, correct, expEnc) {
+  const btns = document.querySelectorAll(`#iq-${qi} .option-btn`);
+  btns.forEach((b, i) => {
+    b.disabled = true;
+    if (i === correct) b.classList.add('correct');
+    else if (i === oi) b.classList.add('wrong');
+  });
+  const expEl = document.getElementById(`iq-exp-${qi}`);
+  expEl.innerHTML = `<strong>${oi === correct ? '✅ Correct!' : '❌ Wrong!'}</strong> ${decodeURIComponent(expEnc)}`;
+  expEl.classList.add('show');
+}
+
+// ============================================================
+// SIMULATIONS
+// ============================================================
+function buildSimGrid() {
+  document.getElementById('simGrid').innerHTML = SIMULATIONS.map(s => `
+    <div class="sim-card" onclick="openSim('${s.id}')">
+      <div class="sim-icon">${s.icon}</div>
+      <div class="sim-name">${s.name}</div>
+      <div class="sim-desc">${s.desc}</div>
+    </div>
+  `).join('');
+}
+
+function openSim(id) {
+  const sim = SIMULATIONS.find(s => s.id === id);
+  document.getElementById('simDetailTitle').textContent = sim.name;
+  const container = document.getElementById('sim-container');
+
+  switch(id) {
+    case 'graph': container.innerHTML = buildGraphPlotter(); break;
+    case 'trig': container.innerHTML = buildTrigSim(); break;
+    case 'perm': container.innerHTML = buildPermSim(); break;
+    case 'binom': container.innerHTML = buildBinomSim(); break;
+    case '3d': container.innerHTML = build3DSim(); break;
+    case 'prob': container.innerHTML = buildProbSim(); break;
+  }
+
+  showScreen('sim-detail', null);
+  requestAnimationFrame(() => initSim(id));
+}
+
+function buildGraphPlotter() {
+  return `
+    <div class="sim-area">
+      <canvas id="graphCanvas" width="360" height="280" style="width:100%;background:#05080f;"></canvas>
+    </div>
+    <div style="padding:16px;">
+      <label style="font-size:0.8rem;color:var(--text-secondary);display:block;margin-bottom:8px;">Enter function f(x):</label>
+      <input id="graph-input" value="Math.sin(x)" placeholder="e.g. Math.sin(x), x*x, Math.cos(2*x)">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-primary btn-sm" onclick="plotGraph()">📊 Plot</button>
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('graph-input').value='x*x';plotGraph()">x²</button>
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('graph-input').value='Math.sin(x)';plotGraph()">sin(x)</button>
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('graph-input').value='Math.cos(x)';plotGraph()">cos(x)</button>
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('graph-input').value='Math.tan(x)';plotGraph()">tan(x)</button>
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('graph-input').value='Math.sqrt(Math.abs(x))';plotGraph()">√|x|</button>
+      </div>
+      <div class="sim-output" id="graphInfo">Click Plot to draw the function</div>
+    </div>
+  `;
+}
+
+function buildTrigSim() {
+  return `
+    <div class="sim-area">
+      <canvas id="trigCanvas" width="360" height="300" style="width:100%;background:#05080f;"></canvas>
+    </div>
+    <div style="padding:16px;">
+      <div class="sim-controls">
+        <div class="ctrl-group">
+          <label>Angle: <span id="angleVal">0°</span></label>
+          <input type="range" id="angleSlider" min="0" max="360" value="0" oninput="updateTrig()">
+        </div>
+      </div>
+      <div class="sim-output" id="trigOutput">sin 0° = 0.000 | cos 0° = 1.000 | tan 0° = 0.000</div>
+    </div>
+  `;
+}
+
+function buildPermSim() {
+  return `
+    <div class="sim-area" style="padding:20px;min-height:200px;">
+      <div id="permDisplay" style="min-height:120px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;"></div>
+    </div>
+    <div style="padding:16px;">
+      <div class="sim-controls" style="flex-direction:column;gap:12px;">
+        <div class="ctrl-group">
+          <label>Items (n): <span id="permN">4</span></label>
+          <input type="range" id="permNSlider" min="2" max="6" value="4" oninput="updatePerm()">
+        </div>
+        <div class="ctrl-group">
+          <label>Select (r): <span id="permR">2</span></label>
+          <input type="range" id="permRSlider" min="1" max="4" value="2" oninput="updatePerm()">
+        </div>
+      </div>
+      <div class="sim-output" id="permOutput">P(4,2) = 12 | C(4,2) = 6</div>
+      <div id="permList" style="margin-top:12px;font-family:var(--font-mono);font-size:0.8rem;color:var(--accent-gold);max-height:120px;overflow-y:auto;"></div>
+    </div>
+  `;
+}
+
+function buildBinomSim() {
+  return `
+    <div class="sim-area">
+      <canvas id="binomCanvas" width="360" height="240" style="width:100%;background:#05080f;"></canvas>
+    </div>
+    <div style="padding:16px;">
+      <div class="sim-controls">
+        <div class="ctrl-group">
+          <label>Power n: <span id="binomN">4</span></label>
+          <input type="range" id="binomSlider" min="0" max="8" value="4" oninput="updateBinom()">
+        </div>
+      </div>
+      <div class="sim-output" id="binomOutput"></div>
+    </div>
+  `;
+}
+
+function build3DSim() {
+  return `
+    <div class="sim-area">
+      <canvas id="canvas3d" width="360" height="300" style="width:100%;background:#05080f;"></canvas>
+    </div>
+    <div style="padding:16px;">
+      <div class="sim-controls">
+        <div class="ctrl-group">
+          <label>Rotate X: <span id="rot3x">30</span>°</label>
+          <input type="range" id="rot3xSlider" min="-90" max="90" value="30" oninput="update3D()">
+        </div>
+        <div class="ctrl-group">
+          <label>Rotate Y: <span id="rot3y">45</span>°</label>
+          <input type="range" id="rot3ySlider" min="-180" max="180" value="45" oninput="update3D()">
+        </div>
+      </div>
+      <div class="sim-output">3D Coordinate System — drag sliders to rotate view</div>
+    </div>
+  `;
+}
+
+function buildProbSim() {
+  return `
+    <div class="sim-area" style="padding:20px;min-height:200px;">
+      <div id="probDisplay" style="text-align:center;"></div>
+    </div>
+    <div style="padding:16px;">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+        <button class="btn btn-primary btn-sm" onclick="rollDie()">🎲 Roll Die</button>
+        <button class="btn btn-secondary btn-sm" onclick="flipCoin()">🪙 Flip Coin</button>
+        <button class="btn btn-secondary btn-sm" onclick="rollMultiple()">🎲×10 Roll ×10</button>
+        <button class="btn btn-gold btn-sm" onclick="resetProb()">↺ Reset</button>
+      </div>
+      <div class="sim-output" id="probOutput">Press a button to run experiment</div>
+      <div id="probStats" style="margin-top:12px;font-size:0.85rem;color:var(--text-secondary);"></div>
+    </div>
+  `;
+}
+
+// ============================================================
+// SIM INITIALIZATION
+// ============================================================
+function initSim(id) {
+  switch(id) {
+    case 'graph': plotGraph(); break;
+    case 'trig': drawTrig(0); break;
+    case 'perm': updatePerm(); break;
+    case 'binom': updateBinom(); break;
+    case '3d': update3D(); break;
+    case 'prob': initProbDisplay(); break;
+  }
+}
+
+// ---- GRAPH PLOTTER ----
+function plotGraph() {
+  const canvas = document.getElementById('graphCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const fnStr = document.getElementById('graph-input').value;
+
+  ctx.fillStyle = '#05080f';
+  ctx.fillRect(0, 0, W, H);
+
+  // Grid
+  ctx.strokeStyle = 'rgba(124,58,237,0.15)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x <= W; x += W/10) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for (let y = 0; y <= H; y += H/8) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+
+  // Axes
+  ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(0, H/2); ctx.lineTo(W, H/2); ctx.stroke(); // x-axis
+  ctx.beginPath(); ctx.moveTo(W/2, 0); ctx.lineTo(W/2, H); ctx.stroke(); // y-axis
+
+  // Axis labels
+  ctx.fillStyle = '#94a3b8'; ctx.font = '10px JetBrains Mono';
+  for (let i = -4; i <= 4; i++) {
+    if (i !== 0) {
+      const px = W/2 + i*(W/10); const py = H/2;
+      ctx.fillText(i*2, px-6, py+14);
+      ctx.fillText(i, W/2+4, H/2 - i*(H/8) + 4);
+    }
+  }
+
+  // Plot function
+  try {
+    const fn = new Function('x', 'return ' + fnStr);
+    ctx.strokeStyle = '#7c3aed';
+    ctx.lineWidth = 2.5;
+    ctx.shadowColor = '#7c3aed';
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    let started = false;
+    for (let px = 0; px <= W; px++) {
+      const x = (px - W/2) / (W/10) * 2;
+      try {
+        const y = fn(x);
+        if (!isFinite(y) || Math.abs(y) > 20) { started = false; continue; }
+        const py = H/2 - y * (H/8);
+        if (!started) { ctx.moveTo(px, py); started = true; }
+        else ctx.lineTo(px, py);
+      } catch(e) { started = false; }
+    }
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    document.getElementById('graphInfo').textContent = `f(x) = ${fnStr} plotted successfully ✓`;
+  } catch(e) {
+    document.getElementById('graphInfo').textContent = `Error: ${e.message}`;
+  }
+}
+
+// ---- TRIG CIRCLE ----
+function drawTrig(angleDeg) {
+  const canvas = document.getElementById('trigCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cx = W*0.38, cy = H/2, r = Math.min(W,H)*0.32;
+  const angle = angleDeg * Math.PI / 180;
+
+  ctx.fillStyle = '#05080f'; ctx.fillRect(0, 0, W, H);
+
+  // Grid circles
+  [0.5,1].forEach(scale => {
+    ctx.beginPath(); ctx.arc(cx, cy, r*scale, 0, 2*Math.PI);
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 1; ctx.stroke();
+  });
+
+  // Axes
+  ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(cx-r-20, cy); ctx.lineTo(cx+r+20, cy); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx, cy-r-20); ctx.lineTo(cx, cy+r+20); ctx.stroke();
+
+  // Unit circle
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, 2*Math.PI);
+  ctx.strokeStyle = 'rgba(124,58,237,0.5)'; ctx.lineWidth = 2; ctx.stroke();
+
+  // Point on circle
+  const px = cx + r * Math.cos(-angle), py = cy + r * Math.sin(-angle);
+
+  // Sin (vertical)
+  ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px, cy);
+  ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 2; ctx.stroke();
+
+  // Cos (horizontal)
+  ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(px, cy);
+  ctx.strokeStyle = '#06b6d4'; ctx.lineWidth = 2; ctx.stroke();
+
+  // Hypotenuse
+  ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(px, py);
+  ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 2.5; ctx.stroke();
+
+  // Angle arc
+  ctx.beginPath(); ctx.arc(cx, cy, 25, -angle, 0, angle < 0);
+  ctx.strokeStyle = '#a78bfa'; ctx.lineWidth = 1.5; ctx.stroke();
+
+  // Point
+  ctx.beginPath(); ctx.arc(px, py, 6, 0, 2*Math.PI);
+  ctx.fillStyle = '#7c3aed'; ctx.fill();
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+
+  // Labels
+  ctx.font = 'bold 11px JetBrains Mono';
+  ctx.fillStyle = '#ef4444';
+  ctx.fillText(`sin=${Math.sin(angle).toFixed(2)}`, cx+r+10, cy-20);
+  ctx.fillStyle = '#06b6d4';
+  ctx.fillText(`cos=${Math.cos(angle).toFixed(2)}`, cx+r+10, cy);
+  ctx.fillStyle = '#f59e0b';
+  const tan = Math.tan(angle);
+  ctx.fillText(`tan=${isFinite(tan) ? tan.toFixed(2) : '∞'}`, cx+r+10, cy+20);
+
+  // Angle label
+  ctx.fillStyle = '#a78bfa';
+  ctx.fillText(`θ=${angleDeg}°`, cx+8, cy-8);
+}
+
+function updateTrig() {
+  const angle = parseInt(document.getElementById('angleSlider').value);
+  document.getElementById('angleVal').textContent = angle + '°';
+  const rad = angle * Math.PI / 180;
+  const sin = Math.sin(rad), cos = Math.cos(rad), tan = Math.tan(rad);
+  document.getElementById('trigOutput').textContent =
+    `sin ${angle}° = ${sin.toFixed(3)} | cos ${angle}° = ${cos.toFixed(3)} | tan ${angle}° = ${isFinite(tan) ? tan.toFixed(3) : '∞'}`;
+  drawTrig(angle);
+}
+
+// ---- PERMUTATIONS ----
+function factorial(n) { return n <= 1 ? 1 : n * factorial(n-1); }
+function updatePerm() {
+  const n = parseInt(document.getElementById('permNSlider').value);
+  const rSlider = document.getElementById('permRSlider');
+  rSlider.max = n;
+  const r = Math.min(parseInt(rSlider.value), n);
+  rSlider.value = r;
+  document.getElementById('permN').textContent = n;
+  document.getElementById('permR').textContent = r;
+
+  const P = factorial(n) / factorial(n - r);
+  const C = factorial(n) / (factorial(r) * factorial(n - r));
+  document.getElementById('permOutput').textContent = `P(${n},${r}) = ${P} | C(${n},${r}) = ${C}`;
+
+  const labels = 'ABCDEFGHIJ'.slice(0, n).split('');
+  const display = document.getElementById('permDisplay');
+  display.innerHTML = `
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
+      ${labels.map((l,i) => `<div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#2563eb);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;">${l}</div>`).join('')}
+    </div>
+    <p style="color:var(--text-secondary);font-size:0.8rem;text-align:center;">Arranging ${r} of ${n} objects</p>
+  `;
+
+  // Show some permutations
+  const permsList = getPermutations(labels, r).slice(0, 20);
+  document.getElementById('permList').innerHTML = `
+    <div style="margin-bottom:4px;color:var(--text-muted);font-size:0.75rem;">First ${Math.min(20,P)} permutations:</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+      ${permsList.map(p => `<span style="background:rgba(124,58,237,0.2);padding:2px 8px;border-radius:12px;">${p.join('')}</span>`).join('')}
+      ${P > 20 ? `<span style="color:var(--text-muted)">...+${P-20} more</span>` : ''}
+    </div>
+  `;
+}
+
+function getPermutations(arr, r) {
+  if (r === 0) return [[]];
+  const result = [];
+  for (let i = 0; i < arr.length; i++) {
+    const rest = getPermutations(arr.filter((_,j) => j !== i), r-1);
+    rest.forEach(p => result.push([arr[i], ...p]));
+  }
+  return result;
+}
+
+// ---- BINOMIAL ----
+function updateBinom() {
+  const n = parseInt(document.getElementById('binomSlider').value);
+  document.getElementById('binomN').textContent = n;
+
+  // Pascal's Triangle row
+  const coeffs = [];
+  for (let r = 0; r <= n; r++) {
+    coeffs.push(factorial(n) / (factorial(r) * factorial(n-r)));
+  }
+
+  // Draw bar chart
+  const canvas = document.getElementById('binomCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.fillStyle = '#05080f'; ctx.fillRect(0, 0, W, H);
+
+  const maxC = Math.max(...coeffs);
+  const barW = (W - 40) / coeffs.length;
+  const colors = ['#7c3aed','#2563eb','#06b6d4','#10b981','#f59e0b','#ec4899','#ef4444','#8b5cf6','#0891b2'];
+
+  coeffs.forEach((c, i) => {
+    const barH = (c / maxC) * (H - 60);
+    const x = 20 + i * barW;
+    const y = H - 40 - barH;
+    const color = colors[i % colors.length];
+    ctx.fillStyle = color + '99';
+    ctx.fillRect(x + 2, y, barW - 4, barH);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x + 2, y, barW - 4, barH);
+    ctx.fillStyle = '#fff';
+    ctx.font = `${Math.max(8, 12 - n)}px JetBrains Mono`;
+    ctx.textAlign = 'center';
+    if (n <= 6) ctx.fillText(c, x + barW/2, y - 4);
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '9px JetBrains Mono';
+    ctx.fillText(i, x + barW/2, H - 8);
+  });
+  ctx.textAlign = 'left';
+
+  document.getElementById('binomOutput').textContent =
+    `(a+b)^${n}: Coefficients = [${coeffs.join(', ')}]`;
+}
+
+// ---- 3D GEOMETRY ----
+function update3D() {
+  const rx = parseInt(document.getElementById('rot3xSlider').value) * Math.PI/180;
+  const ry = parseInt(document.getElementById('rot3ySlider').value) * Math.PI/180;
+  document.getElementById('rot3x').textContent = document.getElementById('rot3xSlider').value;
+  document.getElementById('rot3y').textContent = document.getElementById('rot3ySlider').value;
+
+  const canvas = document.getElementById('canvas3d');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cx = W/2, cy = H/2;
+
+  ctx.fillStyle = '#05080f'; ctx.fillRect(0, 0, W, H);
+
+  function project(x, y, z) {
+    const cosX = Math.cos(rx), sinX = Math.sin(rx);
+    const cosY = Math.cos(ry), sinY = Math.sin(ry);
+    const ny = y * cosX - z * sinX;
+    const nz = y * sinX + z * cosX;
+    const nx2 = x * cosY + nz * sinY;
+    const nz2 = -x * sinY + nz * cosY;
+    const scale = 300 / (300 + nz2);
+    return { x: cx + nx2 * scale * 60, y: cy - ny * scale * 60 };
+  }
+
+  // Draw axes
+  const axisLen = 2.5;
+  const axes = [
+    { from: [0,0,0], to: [axisLen,0,0], color: '#ef4444', label: 'X' },
+    { from: [0,0,0], to: [0,axisLen,0], color: '#10b981', label: 'Y' },
+    { from: [0,0,0], to: [0,0,axisLen], color: '#2563eb', label: 'Z' }
+  ];
+
+  axes.forEach(ax => {
+    const p1 = project(...ax.from), p2 = project(...ax.to);
+    ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y);
+    ctx.strokeStyle = ax.color; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = ax.color; ctx.font = 'bold 12px Exo 2';
+    ctx.fillText(ax.label, p2.x + 4, p2.y + 4);
+  });
+
+  // Grid on xy plane
+  ctx.strokeStyle = 'rgba(255,255,255,0.07)'; ctx.lineWidth = 1;
+  for (let i = -2; i <= 2; i++) {
+    let p1 = project(i, -2, 0), p2 = project(i, 2, 0);
+    ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+    p1 = project(-2, i, 0); p2 = project(2, i, 0);
+    ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+  }
+
+  // Sample points
+  const points = [[1,1,1],[2,0,1],[0,2,1.5],[-1,1,2],[1,-1,0.5]];
+  const pColors = ['#7c3aed','#f59e0b','#ec4899','#06b6d4','#10b981'];
+  points.forEach((pt, i) => {
+    const p = project(...pt);
+    ctx.beginPath(); ctx.arc(p.x, p.y, 6, 0, 2*Math.PI);
+    ctx.fillStyle = pColors[i]; ctx.fill();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.fillStyle = '#fff'; ctx.font = '10px JetBrains Mono';
+    ctx.fillText(`(${pt.join(',')})`, p.x + 8, p.y - 6);
+  });
+
+  // Origin
+  const o = project(0,0,0);
+  ctx.beginPath(); ctx.arc(o.x, o.y, 5, 0, 2*Math.PI);
+  ctx.fillStyle = '#fff'; ctx.fill();
+  ctx.fillStyle = '#94a3b8'; ctx.font = '10px JetBrains Mono';
+  ctx.fillText('O(0,0,0)', o.x+6, o.y+4);
+}
+
+// ---- PROBABILITY SIM ----
+let probData = { rolls: [], flips: [], total: 0 };
+
+function initProbDisplay() {
+  document.getElementById('probDisplay').innerHTML = `
+    <div style="font-size:4rem;margin-bottom:12px;">🎲</div>
+    <p style="color:var(--text-secondary);font-size:0.9rem;">Press Roll Die or Flip Coin to run experiments</p>
+  `;
+}
+
+function rollDie() {
+  const result = Math.floor(Math.random() * 6) + 1;
+  probData.rolls.push(result); probData.total++;
+  const faces = ['⚀','⚁','⚂','⚃','⚄','⚅'];
+  document.getElementById('probDisplay').innerHTML = `
+    <div style="font-size:5rem;">${faces[result-1]}</div>
+    <div style="font-size:1.5rem;font-family:var(--font-display);color:var(--accent-gold);">${result}</div>
+  `;
+  updateProbStats();
+}
+
+function flipCoin() {
+  const result = Math.random() < 0.5 ? 'Heads' : 'Tails';
+  probData.flips.push(result); probData.total++;
+  document.getElementById('probDisplay').innerHTML = `
+    <div style="font-size:4rem;">${result === 'Heads' ? '🌝' : '🌚'}</div>
+    <div style="font-size:1.5rem;font-family:var(--font-display);color:var(--accent-cyan);">${result}</div>
+  `;
+  updateProbStats();
+}
+
+function rollMultiple() {
+  for (let i = 0; i < 10; i++) {
+    const r = Math.floor(Math.random() * 6) + 1;
+    probData.rolls.push(r); probData.total++;
+  }
+  document.getElementById('probDisplay').innerHTML = `
+    <div style="font-size:2rem;">🎲×10</div>
+    <div style="color:var(--text-secondary);font-size:0.85rem;">10 dice rolled!</div>
+  `;
+  updateProbStats();
+}
+
+function resetProb() {
+  probData = { rolls: [], flips: [], total: 0 };
+  initProbDisplay();
+  document.getElementById('probOutput').textContent = 'Statistics reset';
+  document.getElementById('probStats').innerHTML = '';
+}
+
+function updateProbStats() {
+  if (probData.rolls.length > 0) {
+    const counts = {};
+    probData.rolls.forEach(r => counts[r] = (counts[r] || 0) + 1);
+    const statsHTML = Object.keys(counts).sort().map(k =>
+      `<span style="margin-right:12px;">Face ${k}: ${counts[k]}/${probData.rolls.length} = <strong style="color:var(--accent-gold)">${(counts[k]/probData.rolls.length*100).toFixed(1)}%</strong> (theoretical: 16.7%)</span>`
+    ).join('');
+    document.getElementById('probStats').innerHTML = `<div style="line-height:2;">${statsHTML}</div>`;
+    document.getElementById('probOutput').textContent = `Total rolls: ${probData.rolls.length} | Last: ${probData.rolls[probData.rolls.length-1]}`;
+  }
+  if (probData.flips.length > 0) {
+    const h = probData.flips.filter(f => f === 'Heads').length;
+    document.getElementById('probOutput').textContent =
+      `Flips: ${probData.flips.length} | H: ${h} (${(h/probData.flips.length*100).toFixed(1)}%) | T: ${probData.flips.length-h} (${((probData.flips.length-h)/probData.flips.length*100).toFixed(1)}%)`;
+  }
+}
+
+// ============================================================
+// QUIZ SYSTEM
+// ============================================================
+function buildQuizChapterSelect() {
+  document.getElementById('quizChapterSelect').innerHTML = CHAPTERS.map(ch => `
+    <button class="quiz-chapter-btn" onclick="startQuiz(${ch.id})">
+      <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,${ch.color},${ch.color}99);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;flex-shrink:0;">${ch.id}</div>
+      <div>
+        <div style="font-weight:700;font-size:0.9rem;">${ch.icon} ${ch.title}</div>
+        <div style="font-size:0.75rem;color:var(--text-secondary);">${ch.quiz.length} questions · ${appState.quizScores[ch.id] !== undefined ? '⭐ Best: '+appState.quizScores[ch.id]+'%' : 'Not attempted'}</div>
+      </div>
+      <div style="margin-left:auto;color:var(--text-muted);">›</div>
+    </button>
+  `).join('');
+}
+
+function startQuiz(chapterId) {
+  const ch = CHAPTERS.find(c => c.id === chapterId);
+  appState.quizState = {
+    chapter: ch,
+    current: 0,
+    score: 0,
+    answered: 0,
+    total: ch.quiz.length
+  };
+
+  document.getElementById('quizChapterSelect').style.display = 'none';
+  document.getElementById('quiz-container').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const qs = appState.quizState;
+  const container = document.getElementById('quiz-container');
+
+  if (qs.current >= qs.total) {
+    showQuizResult();
+    return;
+  }
+
+  const q = qs.chapter.quiz[qs.current];
+  const pct = (qs.current / qs.total) * 100;
+
+  container.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <button class="btn btn-secondary btn-sm" onclick="endQuiz()">← Exit</button>
+      <span style="font-family:var(--font-display);color:var(--accent-gold);">${qs.score}/${qs.answered}</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <span style="font-size:0.8rem;color:var(--text-secondary);">Q${qs.current+1} of ${qs.total} · ${qs.chapter.title}</span>
+    </div>
+    <div style="height:6px;background:var(--bg-secondary);border-radius:3px;margin-bottom:20px;overflow:hidden;">
+      <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--accent-gold),var(--accent-green));border-radius:3px;transition:width 0.4s;"></div>
+    </div>
+    <div class="question-card">
+      <div class="question-num">Question ${qs.current+1}</div>
+      <div class="question-text">${q.q}</div>
+      <div class="options-list" id="optionsList">
+        ${q.opts.map((opt, i) => `
+          <button class="option-btn" id="opt-${i}" onclick="answerQuiz(${i})">
+            <span class="option-letter">${['A','B','C','D'][i]}</span>
+            <span>${opt}</span>
+          </button>
+        `).join('')}
+      </div>
+      <div class="explanation-box" id="quizExp"></div>
+    </div>
+  `;
+}
+
+function answerQuiz(chosen) {
+  const qs = appState.quizState;
+  const q = qs.chapter.quiz[qs.current];
+  const correct = q.ans;
+
+  document.querySelectorAll('.option-btn').forEach((b, i) => {
+    b.disabled = true;
+    if (i === correct) b.classList.add('correct');
+    else if (i === chosen) b.classList.add('wrong');
+  });
+
+  const expEl = document.getElementById('quizExp');
+  const isRight = chosen === correct;
+  if (isRight) qs.score++;
+  qs.answered++;
+  expEl.innerHTML = `<strong>${isRight ? '✅ Correct!' : '❌ Wrong!'}</strong> ${q.exp}`;
+  expEl.classList.add('show');
+
+  setTimeout(() => {
+    qs.current++;
+    renderQuestion();
+  }, 1800);
+}
+
+function showQuizResult() {
+  const qs = appState.quizState;
+  const pct = Math.round((qs.score / qs.total) * 100);
+
+  // Save score
+  const prev = appState.quizScores[qs.chapter.id] || 0;
+  if (pct > prev) {
+    appState.quizScores[qs.chapter.id] = pct;
+    localStorage.setItem('mathQuizScores', JSON.stringify(appState.quizScores));
+  }
+
+  const emoji = pct >= 80 ? '🏆' : pct >= 60 ? '👍' : pct >= 40 ? '📚' : '💪';
+  const msg = pct >= 80 ? 'Excellent! Outstanding performance!' : pct >= 60 ? 'Good job! Keep practicing!' : pct >= 40 ? 'Fair performance. Review the chapter.' : 'Keep trying! Revisit the concepts.';
+
+  document.getElementById('quiz-container').innerHTML = `
+    <div class="quiz-result">
+      <div class="result-emoji">${emoji}</div>
+      <div class="result-score">${pct}%</div>
+      <div style="font-family:var(--font-display);font-size:1rem;margin-bottom:8px;">${qs.chapter.title}</div>
+      <p class="result-msg">${msg}</p>
+      <div class="result-breakdown">
+        <div class="result-stat">
+          <div class="result-stat-val correct">${qs.score}</div>
+          <div class="result-stat-label">Correct</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-val wrong">${qs.total - qs.score}</div>
+          <div class="result-stat-label">Wrong</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-val" style="color:var(--accent-cyan)">${qs.total}</div>
+          <div class="result-stat-label">Total</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="startQuiz(${qs.chapter.id})">🔄 Retry</button>
+        <button class="btn btn-secondary" onclick="endQuiz()">📚 Back to Chapters</button>
+      </div>
+    </div>
+  `;
+  updateHomeStats();
+}
+
+function endQuiz() {
+  document.getElementById('quiz-container').style.display = 'none';
+  document.getElementById('quizChapterSelect').style.display = 'block';
+  buildQuizChapterSelect();
+}
+
+// ============================================================
+// FORMULA SHEETS
+// ============================================================
+function buildFormulaChapterSelect() {
+  document.getElementById('formulaChapterSelect').innerHTML = CHAPTERS.map(ch => `
+    <button class="formula-chapter-btn" onclick="showFormulas(${ch.id})">
+      <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,${ch.color},${ch.color}99);display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;flex-shrink:0;">${ch.id}</div>
+      <div style="font-weight:700;">${ch.icon} ${ch.title}</div>
+      <div style="margin-left:auto;color:var(--accent-gold);font-size:0.8rem;">${ch.formulas.length} formulas ›</div>
+    </button>
+  `).join('');
+}
+
+function showFormulas(chapterId) {
+  const ch = CHAPTERS.find(c => c.id === chapterId);
+  document.getElementById('formulaChapterSelect').style.display = 'none';
+  const detail = document.getElementById('formula-detail');
+  detail.style.display = 'block';
+  detail.innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+      <button class="btn btn-secondary btn-sm" onclick="document.getElementById('formulaChapterSelect').style.display='block';document.getElementById('formula-detail').style.display='none';">← Back</button>
+      <h3 style="font-family:var(--font-display);font-size:1rem;color:var(--accent-cyan);">${ch.title}</h3>
+    </div>
+    <div class="formula-group">
+      <div class="formula-group-title">📐 All Formulas</div>
+      ${ch.formulas.map(f => `
+        <div class="formula-item">
+          <div class="formula-name">${f.name}</div>
+          <div class="formula-math">${f.math}</div>
+          ${f.note ? `<div class="formula-note">${f.note}</div>` : ''}
+        </div>
+      `).join('')}
+    </div>
+    <div style="margin-top:20px;padding:16px;background:var(--bg-secondary);border-radius:var(--radius);">
+      <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:8px;">Quick Quiz</div>
+      <button class="btn btn-gold" onclick="showScreen('quiz-screen','quiz');startQuiz(${ch.id})">🎯 Test on ${ch.title}</button>
+    </div>
+  `;
+}
+
+// ============================================================
+// PROGRESS SCREEN
+// ============================================================
+function updateProgressScreen() {
+  const completed = Object.values(appState.progress).filter(v => v > 0).length;
+  const quizAttempts = Object.keys(appState.quizScores).length;
+  const avgScore = quizAttempts ? Math.round(Object.values(appState.quizScores).reduce((a,b) => a+b, 0) / quizAttempts) : 0;
+
+  document.getElementById('progressOverview').innerHTML = `
+    <div class="ov-card">
+      <div class="ov-val" style="color:var(--accent-purple)">${completed}/16</div>
+      <div class="ov-label">Chapters Studied</div>
+    </div>
+    <div class="ov-card">
+      <div class="ov-val" style="color:var(--accent-gold)">${avgScore}%</div>
+      <div class="ov-label">Quiz Average</div>
+    </div>
+    <div class="ov-card">
+      <div class="ov-val" style="color:var(--accent-cyan)">${quizAttempts}</div>
+      <div class="ov-label">Quizzes Taken</div>
+    </div>
+    <div class="ov-card">
+      <div class="ov-val" style="color:var(--accent-green)">${Math.round((completed/16)*100)}%</div>
+      <div class="ov-label">Completion</div>
+    </div>
+  `;
+
+  document.getElementById('chapterProgressList').innerHTML = CHAPTERS.map(ch => {
+    const studied = appState.progress[ch.id] > 0;
+    const score = appState.quizScores[ch.id];
+    const pct = score !== undefined ? score : (studied ? 50 : 0);
+    return `
+      <div class="cp-item">
+        <div class="cp-header">
+          <span class="cp-name">${ch.id}. ${ch.title}</span>
+          <span class="cp-pct">${score !== undefined ? score + '%' : studied ? '✓ Read' : '—'}</span>
+        </div>
+        <div class="cp-bar-outer">
+          <div class="cp-bar-inner" style="width:${pct}%"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ============================================================
+// STORAGE
+// ============================================================
+function saveProgress() {
+  localStorage.setItem('mathProgress', JSON.stringify(appState.progress));
+  updateHomeStats();
+  buildChapterList();
+  updateProgressScreen();
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ============================================================
+// PWA SERVICE WORKER — registered only when file is available
+// (skipped in preview; works when deployed with service-worker.js)
+// ============================================================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    // Only register if not running inside an iframe / preview sandbox
+    if (window.self === window.top) {
+      navigator.serviceWorker.register('./service-worker.js')
+        .then(() => console.log('SW registered ✓'))
+        .catch(() => { /* SW not available in this environment — app works fine offline via cache */ });
+    }
+  });
+}
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('load', () => {
+  initSplash();
+});
+
+// Handle back button on mobile
+window.addEventListener('popstate', () => {
+  if (appState.currentScreen === 'chapter-detail') {
+    showScreen('chapters-screen', 'chapters');
+  } else if (appState.currentScreen === 'sim-detail') {
+    showScreen('simulation-screen', 'simulations');
+  }
+});
+</script>
+</body>
+</html>

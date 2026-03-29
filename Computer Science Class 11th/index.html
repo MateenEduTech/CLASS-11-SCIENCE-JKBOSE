@@ -1,0 +1,3212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="description" content="JKBOSE Class 11 Computer Science Interactive Learning App by Mateen Yousuf">
+<meta name="theme-color" content="#00d4ff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CS Class 11">
+<link rel="manifest" href="manifest.json">
+<title>Class 11 Computer Science | JKBOSE | Mateen Yousuf</title>
+
+<style>
+/* =============================================
+   CSS VARIABLES & ROOT THEME
+   ============================================= */
+:root {
+  --bg-primary: #0a0e1a;
+  --bg-secondary: #0f1629;
+  --bg-card: #131d35;
+  --bg-card2: #0d1a2e;
+  --accent-cyan: #00d4ff;
+  --accent-blue: #0080ff;
+  --accent-purple: #7c3aed;
+  --accent-green: #00ff88;
+  --accent-orange: #ff6b35;
+  --accent-pink: #ff2d78;
+  --text-primary: #e8f0fe;
+  --text-secondary: #8899bb;
+  --text-muted: #445577;
+  --border: rgba(0,212,255,0.15);
+  --shadow: 0 8px 32px rgba(0,0,0,0.5);
+  --gradient-hero: linear-gradient(135deg, #0a0e1a 0%, #0f1e3a 50%, #0a1628 100%);
+  --font-display: 'Courier New', 'Lucida Console', monospace;
+  --font-body: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  --radius: 16px;
+  --transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* =============================================
+   RESET & BASE
+   ============================================= */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+input, select, textarea { font-family: inherit; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-secondary); }
+::-webkit-scrollbar-thumb { background: var(--accent-cyan); border-radius: 3px; }
+
+/* =============================================
+   ANIMATED BACKGROUND GRID
+   ============================================= */
+.grid-bg {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: gridPan 20s linear infinite;
+}
+@keyframes gridPan { 0%{background-position:0 0} 100%{background-position:40px 40px} }
+
+/* =============================================
+   SCREENS / VIEWS
+   ============================================= */
+.screen { display: none; min-height: 100vh; position: relative; z-index: 1; }
+.screen.active { display: flex; flex-direction: column; }
+
+/* =============================================
+   TITLE / SPLASH SCREEN
+   ============================================= */
+#splash-screen {
+  background: var(--gradient-hero);
+  align-items: center; justify-content: center;
+  text-align: center; padding: 20px;
+  position: relative; overflow: hidden;
+}
+
+/* Floating code particles */
+.particles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.particle {
+  position: absolute;
+  font-family: var(--font-display);
+  color: rgba(0,212,255,0.15);
+  font-size: 14px;
+  animation: floatUp linear infinite;
+  white-space: nowrap;
+}
+@keyframes floatUp {
+  0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+}
+
+.splash-content { position: relative; z-index: 2; max-width: 500px; }
+
+/* Circuit SVG decoration */
+.circuit-top {
+  width: 200px; height: 100px; margin: 0 auto 20px;
+}
+
+.splash-icon {
+  width: 100px; height: 100px;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+  border-radius: 24px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 24px;
+  font-size: 48px;
+  box-shadow: 0 0 40px rgba(0,212,255,0.4), 0 0 80px rgba(0,212,255,0.1);
+  animation: iconPulse 3s ease-in-out infinite;
+}
+@keyframes iconPulse {
+  0%,100%{transform:scale(1);box-shadow:0 0 40px rgba(0,212,255,0.4)}
+  50%{transform:scale(1.05);box-shadow:0 0 60px rgba(0,212,255,0.7)}
+}
+
+.splash-label {
+  font-family: var(--font-display);
+  font-size: 11px; letter-spacing: 4px;
+  color: var(--accent-cyan); text-transform: uppercase;
+  margin-bottom: 12px;
+  animation: fadeInDown 0.8s ease both;
+}
+.splash-title {
+  font-size: clamp(26px, 6vw, 40px);
+  font-weight: 800; line-height: 1.1;
+  color: #fff; margin-bottom: 8px;
+  animation: fadeInDown 0.9s ease both;
+}
+.splash-title span { color: var(--accent-cyan); }
+.splash-subtitle {
+  font-size: 15px; color: var(--text-secondary);
+  margin-bottom: 32px;
+  animation: fadeInDown 1s ease both;
+}
+
+/* Author card */
+.author-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 32px;
+  backdrop-filter: blur(10px);
+  animation: fadeInUp 1.1s ease both;
+}
+.author-photo {
+  width: 60px; height: 60px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+  overflow: hidden; flex-shrink: 0;
+  border: 2px solid var(--accent-cyan);
+  box-shadow: 0 0 20px rgba(0,212,255,0.3);
+}
+.author-photo img { width: 100%; height: 100%; object-fit: cover; }
+.author-photo-placeholder {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+}
+.author-info { text-align: left; }
+.author-name { font-size: 17px; font-weight: 700; color: #fff; }
+.author-role { font-size: 12px; color: var(--text-secondary); }
+.author-org { font-size: 11px; color: var(--accent-cyan); margin-top: 2px; }
+
+.start-btn {
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+  color: #000; font-size: 16px; font-weight: 700;
+  padding: 16px 48px; border-radius: 50px;
+  letter-spacing: 1px; text-transform: uppercase;
+  box-shadow: 0 4px 30px rgba(0,212,255,0.4);
+  transition: var(--transition);
+  animation: fadeInUp 1.2s ease both;
+  position: relative; overflow: hidden;
+}
+.start-btn::before {
+  content:''; position: absolute; inset: 0;
+  background: rgba(255,255,255,0.2);
+  transform: translateX(-100%);
+  transition: transform 0.4s ease;
+}
+.start-btn:hover::before { transform: translateX(100%); }
+.start-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(0,212,255,0.6); }
+.start-btn:active { transform: translateY(0); }
+
+.version-tag {
+  margin-top: 24px; font-size: 11px;
+  color: var(--text-muted); font-family: var(--font-display);
+}
+
+@keyframes fadeInDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeInUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+/* =============================================
+   NAVIGATION BAR (App Nav)
+   ============================================= */
+.app-nav {
+  background: rgba(10,14,26,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 16px;
+  display: flex; align-items: center;
+  height: 60px; gap: 12px;
+  position: sticky; top: 0; z-index: 100;
+  flex-shrink: 0;
+}
+.nav-back {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: rgba(0,212,255,0.1);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent-cyan); font-size: 18px;
+  transition: var(--transition); flex-shrink: 0;
+}
+.nav-back:hover { background: rgba(0,212,255,0.2); }
+.nav-title { font-size: 16px; font-weight: 700; flex: 1; }
+.nav-icon { font-size: 22px; }
+
+/* =============================================
+   DASHBOARD SCREEN
+   ============================================= */
+#dashboard-screen { background: var(--bg-primary); }
+.dashboard-content {
+  padding: 20px 16px; flex: 1; overflow-y: auto;
+}
+
+.dash-hero {
+  background: linear-gradient(135deg, var(--bg-card) 0%, rgba(0,128,255,0.1) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px; margin-bottom: 24px;
+  position: relative; overflow: hidden;
+}
+.dash-hero::before {
+  content: ''; position: absolute; top: -30px; right: -30px;
+  width: 120px; height: 120px;
+  background: radial-gradient(circle, rgba(0,212,255,0.1), transparent 70%);
+  border-radius: 50%;
+}
+.dash-hero-title { font-size: 20px; font-weight: 800; color: #fff; }
+.dash-hero-sub { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+.progress-bar-wrap { margin-top: 16px; }
+.progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; }
+.progress-bar {
+  height: 6px; background: rgba(255,255,255,0.1);
+  border-radius: 3px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue));
+  border-radius: 3px; transition: width 1s ease;
+}
+
+.section-title {
+  font-size: 14px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1.5px; color: var(--text-secondary);
+  margin-bottom: 12px; padding-left: 4px;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-title::before {
+  content:''; width: 3px; height: 16px;
+  background: var(--accent-cyan); border-radius: 2px;
+}
+
+/* Quick access grid */
+.quick-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 12px; margin-bottom: 24px;
+}
+.quick-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px; text-align: center;
+  cursor: pointer; transition: var(--transition);
+  position: relative; overflow: hidden;
+}
+.quick-card::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, transparent, rgba(0,212,255,0.05));
+  opacity: 0; transition: opacity 0.3s;
+}
+.quick-card:hover { border-color: var(--accent-cyan); transform: translateY(-2px); }
+.quick-card:hover::after { opacity: 1; }
+.quick-card-icon { font-size: 32px; margin-bottom: 8px; }
+.quick-card-label { font-size: 13px; font-weight: 600; color: #fff; }
+.quick-card-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+.quick-card-badge {
+  position: absolute; top: 8px; right: 8px;
+  background: var(--accent-cyan); color: #000;
+  font-size: 9px; font-weight: 700; padding: 2px 6px;
+  border-radius: 20px;
+}
+
+/* Chapter list */
+.chapter-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+.chapter-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex; align-items: center; gap: 14px;
+  cursor: pointer; transition: var(--transition);
+}
+.chapter-item:hover { border-color: var(--accent-cyan); transform: translateX(4px); }
+.chapter-item.completed { border-color: rgba(0,255,136,0.3); }
+.chapter-num {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800; color: #000; flex-shrink: 0;
+}
+.chapter-item.completed .chapter-num { background: linear-gradient(135deg, var(--accent-green), #00aa55); }
+.chapter-info { flex: 1; }
+.chapter-name { font-size: 14px; font-weight: 600; color: #fff; }
+.chapter-desc { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+.chapter-arrow { color: var(--text-muted); font-size: 18px; }
+.chapter-done-mark { color: var(--accent-green); font-size: 18px; }
+
+/* =============================================
+   CHAPTER DETAIL SCREEN
+   ============================================= */
+#chapter-screen { background: var(--bg-primary); }
+.chapter-content { padding: 20px 16px; flex: 1; overflow-y: auto; }
+
+/* Tabs */
+.tab-bar {
+  display: flex; gap: 4px; padding: 4px;
+  background: var(--bg-card); border-radius: 12px;
+  margin-bottom: 20px; overflow-x: auto;
+  scrollbar-width: none;
+}
+.tab-bar::-webkit-scrollbar { display: none; }
+.tab-btn {
+  flex-shrink: 0; padding: 8px 14px; border-radius: 9px;
+  font-size: 12px; font-weight: 600; color: var(--text-secondary);
+  transition: var(--transition); white-space: nowrap;
+}
+.tab-btn.active {
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+  color: #000;
+}
+.tab-btn:hover:not(.active) { color: var(--accent-cyan); }
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* Concept cards */
+.concept-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px; margin-bottom: 16px;
+}
+.concept-card h3 {
+  font-size: 16px; font-weight: 700; color: var(--accent-cyan);
+  margin-bottom: 12px; padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.concept-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+.concept-card ul { padding-left: 16px; margin-top: 8px; }
+.concept-card ul li { font-size: 13px; color: var(--text-secondary); margin-bottom: 4px; list-style: disc; }
+
+.key-point {
+  background: rgba(0,212,255,0.05);
+  border-left: 3px solid var(--accent-cyan);
+  padding: 12px 16px; border-radius: 0 8px 8px 0;
+  margin: 12px 0; font-size: 13px; color: var(--text-primary);
+}
+.key-point strong { color: var(--accent-cyan); }
+
+/* Code blocks */
+.code-block {
+  background: #060a14;
+  border: 1px solid rgba(0,212,255,0.2);
+  border-radius: 12px; padding: 16px;
+  margin: 12px 0; overflow-x: auto;
+  position: relative;
+}
+.code-block pre {
+  font-family: var(--font-display);
+  font-size: 13px; line-height: 1.6;
+  color: #e8f0fe; white-space: pre;
+}
+.code-label {
+  font-size: 10px; color: var(--accent-cyan); font-family: var(--font-display);
+  text-transform: uppercase; letter-spacing: 1px;
+  margin-bottom: 8px; display: block;
+}
+.code-comment { color: #556; }
+.code-keyword { color: #ff79c6; }
+.code-string { color: #f1fa8c; }
+.code-number { color: #bd93f9; }
+.code-function { color: #50fa7b; }
+.code-output { color: var(--accent-green); }
+
+/* Info boxes */
+.info-box {
+  border-radius: 10px; padding: 14px; margin: 12px 0;
+  font-size: 13px; border: 1px solid;
+}
+.info-box.tip { background: rgba(0,255,136,0.05); border-color: rgba(0,255,136,0.3); color: var(--accent-green); }
+.info-box.note { background: rgba(0,212,255,0.05); border-color: rgba(0,212,255,0.3); color: var(--accent-cyan); }
+.info-box.warning { background: rgba(255,107,53,0.05); border-color: rgba(255,107,53,0.3); color: var(--accent-orange); }
+
+/* =============================================
+   SIMULATIONS
+   ============================================= */
+.sim-container {
+  background: var(--bg-card2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px; margin-bottom: 16px;
+}
+.sim-title {
+  font-size: 15px; font-weight: 700; color: #fff;
+  margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+}
+.sim-title .sim-icon { font-size: 20px; }
+
+/* Number system converter */
+.num-converter { }
+.converter-input {
+  display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;
+}
+.converter-input input {
+  flex: 1; min-width: 100px;
+  background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 12px;
+  color: #fff; font-size: 14px; font-family: var(--font-display);
+}
+.converter-input input:focus { outline: none; border-color: var(--accent-cyan); }
+.converter-select {
+  background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 12px; color: #fff;
+}
+.convert-btn {
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+  color: #000; font-weight: 700; padding: 10px 20px;
+  border-radius: 8px; font-size: 13px; transition: var(--transition);
+}
+.convert-btn:hover { opacity: 0.9; transform: scale(1.02); }
+.converter-result {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 8px;
+}
+.result-box {
+  background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px; text-align: center;
+}
+.result-box-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+.result-box-value {
+  font-size: 16px; font-weight: 700; font-family: var(--font-display);
+  color: var(--accent-cyan); margin-top: 4px; word-break: break-all;
+}
+
+/* Logic gate simulator */
+.gate-sim { }
+.gate-controls { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
+.gate-select {
+  background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 12px; color: #fff; font-size: 13px;
+}
+.input-toggle {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 12px; cursor: pointer;
+  transition: var(--transition); font-size: 13px;
+}
+.input-toggle.on { border-color: var(--accent-green); background: rgba(0,255,136,0.1); color: var(--accent-green); }
+.toggle-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--text-muted); transition: var(--transition);
+}
+.input-toggle.on .toggle-dot { background: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); }
+.gate-canvas-wrap { text-align: center; }
+canvas.gate-canvas {
+  background: rgba(0,0,0,0.3); border-radius: 12px;
+  border: 1px solid var(--border); max-width: 100%;
+}
+.gate-output-display {
+  margin-top: 12px; padding: 12px;
+  background: rgba(0,0,0,0.3); border-radius: 10px;
+  text-align: center; font-size: 18px; font-weight: 700;
+  font-family: var(--font-display);
+}
+.gate-output-display.out-1 { color: var(--accent-green); }
+.gate-output-display.out-0 { color: var(--accent-pink); }
+
+/* Sorting Visualizer */
+.sort-canvas-wrap { position: relative; }
+canvas.sort-canvas {
+  background: rgba(0,0,0,0.3); border-radius: 12px;
+  border: 1px solid var(--border); max-width: 100%; display: block;
+}
+.sort-controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; align-items: center; }
+.sort-btn {
+  padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600;
+  transition: var(--transition);
+}
+.sort-btn.primary {
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+  color: #000;
+}
+.sort-btn.secondary {
+  background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+  color: var(--text-primary);
+}
+.sort-btn:hover { opacity: 0.9; transform: scale(1.02); }
+.sort-speed { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); }
+.sort-speed input[type=range] { width: 80px; accent-color: var(--accent-cyan); }
+.sort-status { font-size: 12px; color: var(--accent-cyan); margin-top: 8px; font-family: var(--font-display); }
+
+/* Python visualizer */
+.py-viz { }
+.py-editor {
+  background: #060a14; border: 1px solid var(--border);
+  border-radius: 12px; padding: 12px; margin-bottom: 12px;
+  font-family: var(--font-display); font-size: 13px;
+  color: #e8f0fe; width: 100%; min-height: 120px;
+  resize: vertical;
+}
+.py-editor:focus { outline: none; border-color: var(--accent-cyan); }
+.py-output {
+  background: #060a14; border: 1px solid var(--border);
+  border-radius: 12px; padding: 12px;
+  font-family: var(--font-display); font-size: 13px;
+  min-height: 80px; color: var(--accent-green);
+  white-space: pre-wrap; max-height: 200px; overflow-y: auto;
+}
+.py-run-btn {
+  background: linear-gradient(135deg, var(--accent-green), #00aa55);
+  color: #000; font-weight: 700; padding: 10px 24px;
+  border-radius: 8px; font-size: 13px; margin-bottom: 10px;
+  transition: var(--transition);
+}
+.py-run-btn:hover { transform: scale(1.02); }
+
+/* =============================================
+   QUIZ SCREEN
+   ============================================= */
+#quiz-screen { background: var(--bg-primary); }
+.quiz-content { padding: 20px 16px; flex: 1; overflow-y: auto; }
+
+.quiz-chapter-select {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 10px; margin-bottom: 20px;
+}
+.quiz-ch-btn {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px;
+  text-align: center; cursor: pointer; transition: var(--transition);
+}
+.quiz-ch-btn:hover { border-color: var(--accent-cyan); }
+.quiz-ch-btn.selected { border-color: var(--accent-cyan); background: rgba(0,212,255,0.1); }
+.quiz-ch-icon { font-size: 28px; margin-bottom: 6px; }
+.quiz-ch-name { font-size: 12px; font-weight: 600; }
+
+.quiz-progress-bar {
+  height: 4px; background: rgba(255,255,255,0.1);
+  border-radius: 2px; margin-bottom: 20px; overflow: hidden;
+}
+.quiz-progress-fill {
+  height: 100%; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue));
+  transition: width 0.4s ease;
+}
+
+.question-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px; margin-bottom: 16px;
+}
+.q-num { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.q-text { font-size: 15px; font-weight: 600; color: #fff; line-height: 1.5; margin-bottom: 16px; }
+.q-code {
+  background: #060a14; border-radius: 8px; padding: 12px;
+  font-family: var(--font-display); font-size: 12px;
+  color: var(--accent-green); margin-bottom: 16px;
+  border: 1px solid var(--border);
+}
+.options-list { display: flex; flex-direction: column; gap: 10px; }
+.option-btn {
+  background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px 16px;
+  text-align: left; color: var(--text-primary); font-size: 14px;
+  cursor: pointer; transition: var(--transition);
+  display: flex; align-items: center; gap: 12px;
+}
+.option-btn:hover { border-color: var(--accent-cyan); background: rgba(0,212,255,0.05); }
+.option-btn.correct { border-color: var(--accent-green); background: rgba(0,255,136,0.1); color: var(--accent-green); }
+.option-btn.wrong { border-color: var(--accent-pink); background: rgba(255,45,120,0.1); color: var(--accent-pink); }
+.option-btn.selected { border-color: var(--accent-blue); background: rgba(0,128,255,0.1); }
+.option-letter {
+  width: 26px; height: 26px; border-radius: 6px;
+  background: rgba(255,255,255,0.1); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; flex-shrink: 0;
+}
+
+.quiz-feedback {
+  border-radius: 10px; padding: 14px; margin-top: 12px;
+  font-size: 13px; display: none;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.correct-fb { background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.3); color: var(--accent-green); }
+.quiz-feedback.wrong-fb { background: rgba(255,45,120,0.1); border: 1px solid rgba(255,45,120,0.3); color: var(--accent-pink); }
+
+.quiz-nav-btns { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; }
+.quiz-nav-btn {
+  padding: 10px 24px; border-radius: 8px; font-size: 14px; font-weight: 600;
+  transition: var(--transition);
+}
+.quiz-nav-btn.primary {
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+  color: #000;
+}
+.quiz-nav-btn.secondary {
+  background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+  color: var(--text-primary);
+}
+.quiz-nav-btn:hover { opacity: 0.9; }
+
+/* Score screen */
+.score-screen {
+  text-align: center; padding: 40px 20px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.score-circle {
+  width: 120px; height: 120px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  box-shadow: 0 0 40px rgba(0,212,255,0.4);
+}
+.score-number { font-size: 36px; font-weight: 800; color: #000; }
+.score-label { font-size: 12px; font-weight: 600; color: rgba(0,0,0,0.7); }
+.score-msg { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+.score-sub { font-size: 14px; color: var(--text-secondary); margin-bottom: 24px; }
+.score-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.score-btn {
+  padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 600;
+  transition: var(--transition);
+}
+.score-btn.primary {
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue)); color: #000;
+}
+.score-btn.secondary {
+  background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-primary);
+}
+.score-btn:hover { transform: scale(1.02); }
+
+/* =============================================
+   PROGRESS SCREEN
+   ============================================= */
+#progress-screen { background: var(--bg-primary); }
+.progress-content { padding: 20px 16px; flex: 1; overflow-y: auto; }
+
+.stats-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 12px; margin-bottom: 24px;
+}
+.stat-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px; text-align: center;
+}
+.stat-value {
+  font-size: 32px; font-weight: 800; font-family: var(--font-display);
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.stat-label { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+
+.chapter-progress-list { display: flex; flex-direction: column; gap: 10px; }
+.ch-progress-item {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px 16px;
+}
+.ch-progress-header { display: flex; justify-content: space-between; margin-bottom: 8px; align-items: center; }
+.ch-progress-name { font-size: 13px; font-weight: 600; color: #fff; }
+.ch-progress-score { font-size: 12px; color: var(--accent-cyan); font-family: var(--font-display); }
+.ch-progress-bar { height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+.ch-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue));
+  transition: width 1s ease;
+}
+.reset-btn {
+  background: rgba(255,45,120,0.1); border: 1px solid rgba(255,45,120,0.3);
+  color: var(--accent-pink); padding: 12px 24px; border-radius: 10px;
+  font-size: 13px; font-weight: 600; width: 100%; margin-top: 16px;
+  transition: var(--transition);
+}
+.reset-btn:hover { background: rgba(255,45,120,0.2); }
+
+/* =============================================
+   ALGORITHM LAB
+   ============================================= */
+#algo-screen { background: var(--bg-primary); }
+.algo-content { padding: 20px 16px; flex: 1; overflow-y: auto; }
+
+/* =============================================
+   BOTTOM NAV BAR
+   ============================================= */
+.bottom-nav {
+  background: rgba(10,14,26,0.97);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  display: flex; padding: 8px 0 env(safe-area-inset-bottom, 8px);
+  flex-shrink: 0; position: sticky; bottom: 0; z-index: 100;
+}
+.bnav-btn {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; gap: 3px; padding: 8px 0;
+  color: var(--text-muted); transition: var(--transition);
+  cursor: pointer;
+}
+.bnav-btn.active { color: var(--accent-cyan); }
+.bnav-icon { font-size: 20px; }
+.bnav-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+
+/* =============================================
+   TOAST NOTIFICATIONS
+   ============================================= */
+.toast-container { position: fixed; top: 70px; right: 16px; z-index: 1000; display: flex; flex-direction: column; gap: 8px; }
+.toast {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px 16px;
+  font-size: 13px; color: #fff; min-width: 200px;
+  animation: slideIn 0.3s ease;
+  box-shadow: var(--shadow);
+}
+.toast.success { border-color: var(--accent-green); }
+.toast.error { border-color: var(--accent-pink); }
+@keyframes slideIn { from{transform:translateX(100%);opacity:0} to{transform:translateX(0);opacity:1} }
+
+/* =============================================
+   MISC
+   ============================================= */
+.install-banner {
+  background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(0,128,255,0.1));
+  border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 14px 16px; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.install-banner-icon { font-size: 24px; }
+.install-banner-text { flex: 1; font-size: 13px; }
+.install-banner-text strong { color: var(--accent-cyan); display: block; margin-bottom: 2px; }
+.install-banner-text span { color: var(--text-secondary); font-size: 11px; }
+.install-btn {
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+  color: #000; font-size: 12px; font-weight: 700;
+  padding: 8px 14px; border-radius: 8px;
+}
+
+/* Loading spinner */
+.loader {
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px;
+}
+.spinner {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 3px solid rgba(0,212,255,0.1);
+  border-top-color: var(--accent-cyan);
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to{transform:rotate(360deg)} }
+
+/* Responsive */
+@media (max-width: 360px) {
+  .quick-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: 1fr; }
+}
+@media (min-width: 600px) {
+  body { max-width: 480px; margin: 0 auto; box-shadow: 0 0 60px rgba(0,0,0,0.5); }
+}
+</style>
+</head>
+<body>
+
+<!-- Animated grid background -->
+<div class="grid-bg"></div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ==========================================
+     SPLASH / TITLE SCREEN
+     ========================================== -->
+<div id="splash-screen" class="screen active">
+  <div class="particles" id="particles"></div>
+  <div class="splash-content">
+
+    <!-- Circuit decoration SVG -->
+    <svg class="circuit-top" viewBox="0 0 200 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="40" x2="60" y2="40" stroke="#00d4ff" stroke-width="1.5" opacity="0.4"/>
+      <circle cx="60" cy="40" r="4" fill="#00d4ff" opacity="0.6"/>
+      <line x1="60" y1="40" x2="60" y2="20" stroke="#00d4ff" stroke-width="1.5" opacity="0.4"/>
+      <line x1="60" y1="20" x2="100" y2="20" stroke="#00d4ff" stroke-width="1.5" opacity="0.4"/>
+      <circle cx="100" cy="20" r="4" fill="#0080ff" opacity="0.6"/>
+      <line x1="100" y1="20" x2="100" y2="60" stroke="#0080ff" stroke-width="1.5" opacity="0.4"/>
+      <line x1="100" y1="60" x2="140" y2="60" stroke="#0080ff" stroke-width="1.5" opacity="0.4"/>
+      <circle cx="140" cy="60" r="4" fill="#7c3aed" opacity="0.6"/>
+      <line x1="140" y1="60" x2="140" y2="40" stroke="#7c3aed" stroke-width="1.5" opacity="0.4"/>
+      <line x1="140" y1="40" x2="200" y2="40" stroke="#7c3aed" stroke-width="1.5" opacity="0.4"/>
+      <!-- Small squares (ICs) -->
+      <rect x="78" y="12" width="16" height="16" rx="2" stroke="#00d4ff" stroke-width="1" fill="rgba(0,212,255,0.1)" opacity="0.7"/>
+      <rect x="118" y="52" width="16" height="16" rx="2" stroke="#7c3aed" stroke-width="1" fill="rgba(124,58,237,0.1)" opacity="0.7"/>
+    </svg>
+
+    <div class="splash-icon">💻</div>
+
+    <p class="splash-label">✦ JKBOSE Class 11 ✦</p>
+    <h1 class="splash-title">Computer Science<br><span>Learning App</span></h1>
+    <p class="splash-subtitle">Interactive · Simulation-Based · Offline Ready</p>
+
+    <div class="author-card">
+      <div class="author-photo" id="authorPhoto">
+        <div class="author-photo-placeholder">👨‍🏫</div>
+      </div>
+      <div class="author-info">
+        <div class="author-name">Mateen Yousuf</div>
+        <div class="author-role">Teacher · Computer Science</div>
+        <div class="author-org">School Education Department, J&K</div>
+      </div>
+    </div>
+
+    <button class="start-btn" onclick="startApp()">
+      ▶ Start Learning
+    </button>
+
+    <p class="version-tag">v1.0 · Full JKBOSE Syllabus · NEP 2020 Aligned</p>
+  </div>
+</div>
+
+<!-- ==========================================
+     DASHBOARD SCREEN
+     ========================================== -->
+<div id="dashboard-screen" class="screen">
+  <nav class="app-nav">
+    <span class="nav-icon">💻</span>
+    <span class="nav-title">CS Dashboard</span>
+    <span style="font-size:13px;color:var(--text-muted);font-family:var(--font-display)">Class 11</span>
+  </nav>
+
+  <div class="dashboard-content">
+    <!-- Install banner -->
+    <div class="install-banner" id="installBanner" style="display:none">
+      <span class="install-banner-icon">📲</span>
+      <div class="install-banner-text">
+        <strong>Install App</strong>
+        <span>Add to home screen for offline access</span>
+      </div>
+      <button class="install-btn" onclick="installApp()">Install</button>
+    </div>
+
+    <!-- Hero progress -->
+    <div class="dash-hero">
+      <div class="dash-hero-title">Welcome back! 👋</div>
+      <div class="dash-hero-sub">JKBOSE Class 11 Computer Science</div>
+      <div class="progress-bar-wrap">
+        <div class="progress-label">
+          <span>Overall Progress</span>
+          <span id="overallPercent">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="overallBar" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick access -->
+    <p class="section-title">Quick Access</p>
+    <div class="quick-grid">
+      <div class="quick-card" onclick="showQuiz()">
+        <div class="quick-card-icon">🎯</div>
+        <div class="quick-card-label">Quiz Mode</div>
+        <div class="quick-card-sub">Test knowledge</div>
+        <span class="quick-card-badge">NEW</span>
+      </div>
+      <div class="quick-card" onclick="showAlgo()">
+        <div class="quick-card-icon">⚙️</div>
+        <div class="quick-card-label">Algorithm Lab</div>
+        <div class="quick-card-sub">Visualize sorts</div>
+      </div>
+      <div class="quick-card" onclick="showSim('numconv')">
+        <div class="quick-card-icon">🔢</div>
+        <div class="quick-card-label">Number Converter</div>
+        <div class="quick-card-sub">Binary, Hex, Dec</div>
+      </div>
+      <div class="quick-card" onclick="showProgress()">
+        <div class="quick-card-icon">📊</div>
+        <div class="quick-card-label">My Progress</div>
+        <div class="quick-card-sub">Track scores</div>
+      </div>
+    </div>
+
+    <!-- Chapters -->
+    <p class="section-title">All Chapters</p>
+    <div class="chapter-list" id="chapterList"></div>
+  </div>
+
+  <nav class="bottom-nav">
+    <div class="bnav-btn active" onclick="showDashboard()">
+      <span class="bnav-icon">🏠</span>
+      <span class="bnav-label">Home</span>
+    </div>
+    <div class="bnav-btn" onclick="showQuiz()">
+      <span class="bnav-icon">🎯</span>
+      <span class="bnav-label">Quiz</span>
+    </div>
+    <div class="bnav-btn" onclick="showAlgo()">
+      <span class="bnav-icon">⚙️</span>
+      <span class="bnav-label">Lab</span>
+    </div>
+    <div class="bnav-btn" onclick="showProgress()">
+      <span class="bnav-icon">📊</span>
+      <span class="bnav-label">Progress</span>
+    </div>
+  </nav>
+</div>
+
+<!-- ==========================================
+     CHAPTER DETAIL SCREEN
+     ========================================== -->
+<div id="chapter-screen" class="screen">
+  <nav class="app-nav">
+    <button class="nav-back" onclick="showDashboard()">←</button>
+    <span class="nav-title" id="chapterNavTitle">Chapter</span>
+    <span id="chapterNavIcon" style="font-size:22px">📖</span>
+  </nav>
+
+  <div class="chapter-content">
+    <div class="tab-bar" id="chapterTabs">
+      <button class="tab-btn active" onclick="switchTab('learn',this)">📚 Learn</button>
+      <button class="tab-btn" onclick="switchTab('examples',this)">💡 Examples</button>
+      <button class="tab-btn" onclick="switchTab('simulation',this)">🔬 Simulate</button>
+      <button class="tab-btn" onclick="switchTab('practice',this)">✏️ Practice</button>
+      <button class="tab-btn" onclick="switchTab('quiz',this)">🎯 Quiz</button>
+    </div>
+
+    <div id="tab-learn" class="tab-panel active" id="learnPanel"></div>
+    <div id="tab-examples" class="tab-panel"></div>
+    <div id="tab-simulation" class="tab-panel"></div>
+    <div id="tab-practice" class="tab-panel"></div>
+    <div id="tab-quiz" class="tab-panel"></div>
+  </div>
+</div>
+
+<!-- ==========================================
+     QUIZ SCREEN
+     ========================================== -->
+<div id="quiz-screen" class="screen">
+  <nav class="app-nav">
+    <button class="nav-back" onclick="showDashboard()">←</button>
+    <span class="nav-title">Quiz Mode</span>
+    <span style="font-size:22px">🎯</span>
+  </nav>
+
+  <div class="quiz-content" id="quizContent">
+    <!-- Chapter selection -->
+    <div id="quizChapterSelect">
+      <p class="section-title">Choose Chapter</p>
+      <div class="quiz-chapter-select" id="quizChBtns"></div>
+      <button class="start-btn" style="width:100%;margin-top:8px" onclick="startQuizForSelected()">
+        Start Quiz ▶
+      </button>
+    </div>
+    <!-- Active quiz -->
+    <div id="quizActive" style="display:none"></div>
+  </div>
+
+  <nav class="bottom-nav">
+    <div class="bnav-btn" onclick="showDashboard()">
+      <span class="bnav-icon">🏠</span>
+      <span class="bnav-label">Home</span>
+    </div>
+    <div class="bnav-btn active" onclick="showQuiz()">
+      <span class="bnav-icon">🎯</span>
+      <span class="bnav-label">Quiz</span>
+    </div>
+    <div class="bnav-btn" onclick="showAlgo()">
+      <span class="bnav-icon">⚙️</span>
+      <span class="bnav-label">Lab</span>
+    </div>
+    <div class="bnav-btn" onclick="showProgress()">
+      <span class="bnav-icon">📊</span>
+      <span class="bnav-label">Progress</span>
+    </div>
+  </nav>
+</div>
+
+<!-- ==========================================
+     ALGORITHM LAB SCREEN
+     ========================================== -->
+<div id="algo-screen" class="screen">
+  <nav class="app-nav">
+    <button class="nav-back" onclick="showDashboard()">←</button>
+    <span class="nav-title">Algorithm Lab</span>
+    <span style="font-size:22px">⚙️</span>
+  </nav>
+
+  <div class="algo-content">
+    <!-- Sorting visualizer -->
+    <div class="sim-container">
+      <div class="sim-title"><span class="sim-icon">📊</span>Sorting Algorithm Visualizer</div>
+      <div class="sort-controls">
+        <select id="sortAlgoSelect" class="gate-select" onchange="resetSort()">
+          <option value="bubble">Bubble Sort</option>
+          <option value="selection">Selection Sort</option>
+          <option value="insertion">Insertion Sort</option>
+        </select>
+        <button class="sort-btn primary" onclick="startSort()">▶ Run</button>
+        <button class="sort-btn secondary" onclick="resetSort()">↺ Reset</button>
+        <div class="sort-speed">
+          <span>Speed</span>
+          <input type="range" id="sortSpeed" min="1" max="10" value="5">
+        </div>
+      </div>
+      <div class="sort-canvas-wrap">
+        <canvas id="sortCanvas" class="sort-canvas" width="440" height="200"></canvas>
+      </div>
+      <div class="sort-status" id="sortStatus">Press ▶ Run to start the animation</div>
+    </div>
+
+    <!-- Logic gate sim -->
+    <div class="sim-container">
+      <div class="sim-title"><span class="sim-icon">⚡</span>Logic Gate Simulator</div>
+      <div class="gate-controls">
+        <select id="gateType" class="gate-select" onchange="drawGate()">
+          <option value="AND">AND Gate</option>
+          <option value="OR">OR Gate</option>
+          <option value="NOT">NOT Gate</option>
+          <option value="NAND">NAND Gate</option>
+          <option value="NOR">NOR Gate</option>
+          <option value="XOR">XOR Gate</option>
+        </select>
+        <div class="input-toggle" id="gateA" onclick="toggleGateInput('A')">
+          <div class="toggle-dot"></div>
+          <span>Input A: <strong id="gateAVal">0</strong></span>
+        </div>
+        <div class="input-toggle" id="gateB" onclick="toggleGateInput('B')">
+          <div class="toggle-dot"></div>
+          <span>Input B: <strong id="gateBVal">0</strong></span>
+        </div>
+      </div>
+      <div class="gate-canvas-wrap">
+        <canvas id="gateCanvas" class="gate-canvas" width="440" height="180"></canvas>
+      </div>
+      <div class="gate-output-display out-0" id="gateOutput">
+        OUTPUT = 0
+      </div>
+    </div>
+
+    <!-- Number system converter -->
+    <div class="sim-container" id="numconv">
+      <div class="sim-title"><span class="sim-icon">🔢</span>Number System Converter</div>
+      <div class="converter-input">
+        <input type="text" id="numInput" placeholder="Enter number..." value="42">
+        <select id="numBase" class="converter-select">
+          <option value="10">Decimal (10)</option>
+          <option value="2">Binary (2)</option>
+          <option value="16">Hexadecimal (16)</option>
+          <option value="8">Octal (8)</option>
+        </select>
+        <button class="convert-btn" onclick="convertNumber()">Convert</button>
+      </div>
+      <div class="converter-result" id="convResult">
+        <div class="result-box"><div class="result-box-label">Decimal</div><div class="result-box-value" id="resDec">42</div></div>
+        <div class="result-box"><div class="result-box-label">Binary</div><div class="result-box-value" id="resBin">101010</div></div>
+        <div class="result-box"><div class="result-box-label">Octal</div><div class="result-box-value" id="resOct">52</div></div>
+        <div class="result-box"><div class="result-box-label">Hex</div><div class="result-box-value" id="resHex">2A</div></div>
+      </div>
+    </div>
+
+    <!-- Python Playground -->
+    <div class="sim-container">
+      <div class="sim-title"><span class="sim-icon">🐍</span>Python Playground (Simulator)</div>
+      <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px">
+        ⚠️ This is a JavaScript-based Python simulator. Supports basic print, variables, loops, and if statements.
+      </p>
+      <textarea class="py-editor" id="pyCode" spellcheck="false">
+# Try basic Python code
+name = "JKBOSE"
+print("Hello,", name)
+
+for i in range(1, 6):
+    print("Count:", i)
+
+x = 10
+y = 20
+if x < y:
+    print(x, "is less than", y)
+</textarea>
+      <button class="py-run-btn" onclick="runPython()">▶ Run Code</button>
+      <div class="code-label">Output:</div>
+      <div class="py-output" id="pyOutput"># Output will appear here...</div>
+    </div>
+  </div>
+
+  <nav class="bottom-nav">
+    <div class="bnav-btn" onclick="showDashboard()">
+      <span class="bnav-icon">🏠</span>
+      <span class="bnav-label">Home</span>
+    </div>
+    <div class="bnav-btn" onclick="showQuiz()">
+      <span class="bnav-icon">🎯</span>
+      <span class="bnav-label">Quiz</span>
+    </div>
+    <div class="bnav-btn active" onclick="showAlgo()">
+      <span class="bnav-icon">⚙️</span>
+      <span class="bnav-label">Lab</span>
+    </div>
+    <div class="bnav-btn" onclick="showProgress()">
+      <span class="bnav-icon">📊</span>
+      <span class="bnav-label">Progress</span>
+    </div>
+  </nav>
+</div>
+
+<!-- ==========================================
+     PROGRESS SCREEN
+     ========================================== -->
+<div id="progress-screen" class="screen">
+  <nav class="app-nav">
+    <button class="nav-back" onclick="showDashboard()">←</button>
+    <span class="nav-title">My Progress</span>
+    <span style="font-size:22px">📊</span>
+  </nav>
+
+  <div class="progress-content">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value" id="statChapters">0</div>
+        <div class="stat-label">Chapters Completed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statQuizzes">0</div>
+        <div class="stat-label">Quizzes Taken</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statAvgScore">0%</div>
+        <div class="stat-label">Average Score</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statStreak">🔥0</div>
+        <div class="stat-label">Day Streak</div>
+      </div>
+    </div>
+
+    <p class="section-title">Chapter Progress</p>
+    <div class="chapter-progress-list" id="chProgressList"></div>
+
+    <button class="reset-btn" onclick="resetProgress()">🗑️ Reset All Progress</button>
+  </div>
+
+  <nav class="bottom-nav">
+    <div class="bnav-btn" onclick="showDashboard()">
+      <span class="bnav-icon">🏠</span>
+      <span class="bnav-label">Home</span>
+    </div>
+    <div class="bnav-btn" onclick="showQuiz()">
+      <span class="bnav-icon">🎯</span>
+      <span class="bnav-label">Quiz</span>
+    </div>
+    <div class="bnav-btn" onclick="showAlgo()">
+      <span class="bnav-icon">⚙️</span>
+      <span class="bnav-label">Lab</span>
+    </div>
+    <div class="bnav-btn active" onclick="showProgress()">
+      <span class="bnav-icon">📊</span>
+      <span class="bnav-label">Progress</span>
+    </div>
+  </nav>
+</div>
+
+<!-- ==========================================
+     JAVASCRIPT APPLICATION CODE
+     ========================================== -->
+<script>
+// =============================================
+//  CURRICULUM DATA — JKBOSE CLASS 11 CS
+// =============================================
+const CHAPTERS = [
+  {
+    id: 1, icon: '🖥️', title: 'Computer System Overview',
+    desc: 'Hardware, software, I/O, memory',
+    color: '#00d4ff',
+    learn: [
+      { heading: 'What is a Computer?',
+        content: 'A computer is an electronic device that processes data according to instructions (programs) to produce useful output. It works on the IPO cycle: Input → Processing → Output.',
+        points: ['Accepts data as input','Processes it using CPU','Stores data in memory','Produces output']
+      },
+      { heading: 'Components of a Computer',
+        content: 'A computer system consists of hardware and software working together.',
+        points: [
+          'Input Devices: Keyboard, Mouse, Scanner, Microphone',
+          'Output Devices: Monitor, Printer, Speaker',
+          'Central Processing Unit (CPU): ALU + CU + Registers',
+          'Memory: RAM (primary), ROM (read-only)',
+          'Secondary Storage: HDD, SSD, USB drive'
+        ]
+      },
+      { heading: 'CPU – Brain of the Computer',
+        content: 'The CPU contains: ALU (Arithmetic Logic Unit) performs calculations and comparisons. Control Unit (CU) manages and coordinates all operations. Registers are small, fast temporary storage inside CPU.',
+      },
+      { heading: 'Memory Hierarchy',
+        content: 'Registers → Cache → RAM → Secondary Storage. Speed decreases and capacity increases as we go down the hierarchy.',
+        keypoint: 'RAM is volatile (loses data on power off). ROM is non-volatile (retains data).'
+      },
+      { heading: 'Software',
+        content: 'Software is the set of instructions that tells hardware what to do.',
+        points: [
+          'System Software: OS (Windows, Linux, Android)',
+          'Application Software: MS Word, Chrome, games',
+          'Utility Software: Antivirus, disk cleaner'
+        ]
+      }
+    ],
+    examples: [
+      { title: 'IPO Cycle Example',
+        text: 'When you type a number on the keyboard (Input), the CPU adds 2 to it (Process), and displays the result on screen (Output).'
+      },
+      { title: 'Types of Memory',
+        text: 'RAM example: When you open a Word document, it loads into RAM. When you shut down without saving, RAM data is lost. ROM example: BIOS firmware stored in ROM chip on motherboard.'
+      }
+    ],
+    simType: 'none',
+    quiz: [
+      { q: 'What does CPU stand for?', opts: ['Central Processing Unit','Computer Program Unit','Central Program Unit','Core Processing Unit'], ans: 0, exp: 'CPU = Central Processing Unit — the brain of the computer.' },
+      { q: 'Which memory is volatile?', opts: ['ROM','Hard Disk','RAM','Flash Drive'], ans: 2, exp: 'RAM (Random Access Memory) loses its data when power is turned off.' },
+      { q: 'Which of the following is an Input device?', opts: ['Monitor','Printer','Speaker','Scanner'], ans: 3, exp: 'Scanner reads physical documents and sends data to the computer.' },
+      { q: 'ALU stands for:', opts: ['Analog Logic Unit','Arithmetic Logic Unit','Array Logic Unit','Automatic Logic Unit'], ans: 1, exp: 'ALU performs arithmetic and logical operations inside the CPU.' },
+      { q: 'Which software manages computer hardware?', opts: ['Application Software','Utility Software','System Software','Malware'], ans: 2, exp: 'System Software (like OS) manages hardware and provides services.' }
+    ]
+  },
+  {
+    id: 2, icon: '🔢', title: 'Number Systems',
+    desc: 'Binary, decimal, octal, hexadecimal',
+    color: '#0080ff',
+    learn: [
+      { heading: 'Introduction to Number Systems',
+        content: 'Computers use different number systems to represent data. The most important are Decimal, Binary, Octal, and Hexadecimal.',
+        keypoint: 'The BASE (radix) determines how many digits a system uses.'
+      },
+      { heading: 'Decimal System (Base 10)',
+        content: 'Uses digits 0–9. This is the system we use in everyday life.',
+        points: ['Digits: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9','Base: 10','Example: 245 = 2×10² + 4×10¹ + 5×10⁰ = 245']
+      },
+      { heading: 'Binary System (Base 2)',
+        content: 'Uses only digits 0 and 1. This is what computers use internally.',
+        points: ['Digits: 0 and 1 only','Base: 2','Each binary digit is called a BIT','8 bits = 1 Byte']
+      },
+      { heading: 'Octal System (Base 8)',
+        content: 'Uses digits 0–7.',
+        points: ['Digits: 0, 1, 2, 3, 4, 5, 6, 7','Base: 8','3 binary bits = 1 octal digit']
+      },
+      { heading: 'Hexadecimal System (Base 16)',
+        content: 'Uses digits 0–9 and letters A–F.',
+        points: ['Digits: 0–9 and A(10), B(11), C(12), D(13), E(14), F(15)','Base: 16','4 binary bits = 1 hex digit','Used in memory addresses, colors (#FF5733)']
+      },
+      { heading: 'Conversions',
+        content: 'Key conversion techniques:',
+        points: [
+          'Decimal → Binary: Divide repeatedly by 2, read remainders upward',
+          'Binary → Decimal: Multiply each bit by 2^position and sum',
+          'Decimal → Hex: Divide by 16, convert remainders to hex digits',
+          'Binary → Hex: Group binary into sets of 4, convert each'
+        ]
+      }
+    ],
+    examples: [
+      { title: 'Decimal 13 to Binary',
+        code: '13 ÷ 2 = 6 R 1\n 6 ÷ 2 = 3 R 0\n 3 ÷ 2 = 1 R 1\n 1 ÷ 2 = 0 R 1\nRead remainders upward: 1101₂'
+      },
+      { title: 'Binary 1010 to Decimal',
+        code: '1×2³ + 0×2² + 1×2¹ + 0×2⁰\n= 8  +  0  +  2  +  0\n= 10₁₀'
+      },
+      { title: 'Hex FF to Decimal',
+        code: 'F×16¹ + F×16⁰\n= 15×16 + 15×1\n= 240 + 15 = 255₁₀'
+      }
+    ],
+    simType: 'numconv',
+    quiz: [
+      { q: 'What is the binary equivalent of decimal 10?', opts: ['1010','1100','1001','0110'], ans: 0, exp: '10 in binary = 1010 (8+2=10)' },
+      { q: 'Convert binary 1111 to decimal:', opts: ['14','15','16','13'], ans: 1, exp: '1×8+1×4+1×2+1×1 = 15' },
+      { q: 'How many bits are in 1 Byte?', opts: ['4','16','2','8'], ans: 3, exp: '1 Byte = 8 bits' },
+      { q: 'Hexadecimal letter "A" represents:', opts: ['11','10','12','9'], ans: 1, exp: 'In hex: A=10, B=11, C=12, D=13, E=14, F=15' },
+      { q: 'Binary number system uses base:', opts: ['8','16','2','10'], ans: 2, exp: 'Binary is base-2, using only 0 and 1.' }
+    ]
+  },
+  {
+    id: 3, icon: '⚡', title: 'Boolean Logic & Gates',
+    desc: 'AND, OR, NOT, truth tables',
+    color: '#7c3aed',
+    learn: [
+      { heading: 'Boolean Algebra',
+        content: 'Boolean algebra deals with binary variables (0 and 1) and logical operations. Invented by George Boole.',
+        keypoint: 'In Boolean: 0 = FALSE and 1 = TRUE'
+      },
+      { heading: 'Basic Logic Operations',
+        content: 'Three fundamental operations:',
+        points: [
+          'AND (·): Output is 1 only when BOTH inputs are 1',
+          'OR (+): Output is 1 when AT LEAST ONE input is 1',
+          'NOT (¬): Output is the COMPLEMENT of input'
+        ]
+      },
+      { heading: 'Logic Gates',
+        content: 'Electronic circuits that implement Boolean operations:',
+        points: [
+          'AND Gate: A·B',
+          'OR Gate: A+B',
+          'NOT Gate: Ā (inverter)',
+          'NAND Gate: NOT AND = complement of AND',
+          'NOR Gate: NOT OR',
+          'XOR Gate: Exclusive OR — output is 1 when inputs are DIFFERENT'
+        ]
+      },
+      { heading: 'Truth Tables',
+        content: 'A truth table lists all possible input combinations and their corresponding outputs.',
+        keypoint: 'For n inputs, there are 2ⁿ rows in a truth table.'
+      },
+      { heading: 'Boolean Laws',
+        content: 'Key laws:',
+        points: [
+          'Identity: A+0=A, A·1=A',
+          'Null: A+1=1, A·0=0',
+          'Idempotent: A+A=A, A·A=A',
+          'Complement: A+Ā=1, A·Ā=0',
+          'De Morgan\'s: (A·B)̄ = Ā+B̄ and (A+B)̄ = Ā·B̄'
+        ]
+      }
+    ],
+    examples: [
+      { title: 'AND Gate Truth Table',
+        code: 'A | B | A AND B\n0 | 0 |    0\n0 | 1 |    0\n1 | 0 |    0\n1 | 1 |    1'
+      },
+      { title: 'OR Gate Truth Table',
+        code: 'A | B | A OR B\n0 | 0 |   0\n0 | 1 |   1\n1 | 0 |   1\n1 | 1 |   1'
+      },
+      { title: "De Morgan's Law",
+        code: "NOT(A AND B) = NOT A OR NOT B\nNOT(A OR B)  = NOT A AND NOT B\n\nVerify: A=1, B=0\nNOT(1 AND 0) = NOT(0) = 1\nNOT 1 OR NOT 0 = 0 OR 1 = 1 ✓"
+      }
+    ],
+    simType: 'gate',
+    quiz: [
+      { q: 'What is the output of AND gate when A=1, B=0?', opts: ['1','0','undefined','2'], ans: 1, exp: 'AND gate: output is 1 ONLY when both inputs are 1.' },
+      { q: 'What is NOT(1)?', opts: ['1','2','0','-1'], ans: 2, exp: 'NOT gate inverts the input: NOT(1) = 0' },
+      { q: 'XOR gate output is 1 when:', opts: ['Both inputs are 1','Both inputs are 0','Inputs are different','Inputs are same'], ans: 2, exp: 'XOR = Exclusive OR, output is 1 only when inputs differ.' },
+      { q: "De Morgan's theorem states NOT(A AND B) equals:", opts: ['NOT A AND NOT B','NOT A OR NOT B','A OR B','A AND B'], ans: 1, exp: "De Morgan's: (A·B)̄ = Ā+B̄" },
+      { q: 'How many rows in a truth table with 3 inputs?', opts: ['6','3','9','8'], ans: 3, exp: 'For n inputs: 2ⁿ rows. For 3 inputs: 2³ = 8 rows.' }
+    ]
+  },
+  {
+    id: 4, icon: '💻', title: 'Introduction to Programming',
+    desc: 'Algorithms, flowcharts, problem solving',
+    color: '#ff6b35',
+    learn: [
+      { heading: 'What is Programming?',
+        content: 'Programming is the process of writing instructions (code) for a computer to follow in order to solve a problem.',
+        keypoint: 'Programming languages bridge human thought and machine execution.'
+      },
+      { heading: 'Algorithm',
+        content: 'An algorithm is a step-by-step, finite set of instructions to solve a problem.',
+        points: [
+          'Finiteness: must terminate',
+          'Definiteness: each step is clear',
+          'Input: zero or more inputs',
+          'Output: at least one output',
+          'Effectiveness: each step is doable'
+        ]
+      },
+      { heading: 'Flowchart Symbols',
+        content: 'Flowcharts visually represent algorithms:',
+        points: [
+          'Oval (Terminal): Start/Stop',
+          'Rectangle (Process): calculations or actions',
+          'Diamond (Decision): yes/no questions',
+          'Parallelogram (Input/Output): data I/O',
+          'Arrows: flow direction'
+        ]
+      },
+      { heading: 'Types of Programming Languages',
+        content: 'Languages by level:',
+        points: [
+          'Machine Language: binary (0s and 1s), fastest',
+          'Assembly Language: mnemonics like MOV, ADD',
+          'High-level Language: Python, Java, C++ — human-readable',
+          'Scripting Languages: JavaScript, PHP'
+        ]
+      },
+      { heading: 'Computational Thinking',
+        content: 'A problem-solving approach:',
+        points: [
+          'Decomposition: break problem into smaller parts',
+          'Pattern Recognition: find similarities',
+          'Abstraction: focus on important details',
+          'Algorithm Design: step-by-step solution'
+        ]
+      }
+    ],
+    examples: [
+      { title: 'Algorithm: Find Largest of Two Numbers',
+        code: 'Step 1: START\nStep 2: Read two numbers A and B\nStep 3: IF A > B THEN\n           Print "A is larger"\n        ELSE\n           Print "B is larger"\nStep 4: STOP'
+      },
+      { title: 'Algorithm: Sum of 1 to N',
+        code: 'Step 1: START\nStep 2: Read N\nStep 3: Set Sum = 0, i = 1\nStep 4: WHILE i <= N:\n           Sum = Sum + i\n           i = i + 1\nStep 5: Print Sum\nStep 6: STOP'
+      }
+    ],
+    simType: 'none',
+    quiz: [
+      { q: 'Which flowchart symbol represents a DECISION?', opts: ['Rectangle','Circle','Diamond','Parallelogram'], ans: 2, exp: 'Diamond shape represents decision (yes/no condition) in flowcharts.' },
+      { q: 'An algorithm must be:', opts: ['Infinite','Ambiguous','Finite and definite','Only in English'], ans: 2, exp: 'Algorithms must be finite (terminate) and definite (unambiguous).' },
+      { q: 'Which is a high-level programming language?', opts: ['Machine Language','Binary Code','Assembly','Python'], ans: 3, exp: 'Python is a high-level, human-readable programming language.' },
+      { q: 'Breaking a complex problem into smaller parts is called:', opts: ['Abstraction','Pattern Recognition','Decomposition','Algorithm'], ans: 2, exp: 'Decomposition is splitting a big problem into manageable sub-problems.' },
+      { q: 'Which symbol represents INPUT/OUTPUT in a flowchart?', opts: ['Oval','Rectangle','Diamond','Parallelogram'], ans: 3, exp: 'Parallelogram (slanted rectangle) represents Input/Output operations.' }
+    ]
+  },
+  {
+    id: 5, icon: '🐍', title: 'Python Basics',
+    desc: 'Variables, data types, operators',
+    color: '#00ff88',
+    learn: [
+      { heading: 'Why Python?',
+        content: 'Python is easy to read, versatile, and widely used. It is the recommended language for JKBOSE Class 11 Computer Science.',
+        points: ['Simple English-like syntax','Free and open source','Large standard library','Used in AI, web, data science']
+      },
+      { heading: 'Variables and Data Types',
+        content: 'A variable stores a value. Python is dynamically typed — no need to declare type.',
+        points: [
+          'int: whole numbers — age = 17',
+          'float: decimal numbers — pi = 3.14',
+          'str: text — name = "Ali"',
+          'bool: True or False',
+          'list: collection — marks = [90, 85, 78]',
+          'None: no value'
+        ]
+      },
+      { heading: 'Input and Output',
+        content: 'Use print() to output and input() to read from user.',
+        keypoint: 'input() always returns a STRING. Use int() or float() to convert.'
+      },
+      { heading: 'Operators',
+        content: 'Types of operators:',
+        points: [
+          'Arithmetic: +, -, *, /, //, %, **',
+          'Comparison: ==, !=, <, >, <=, >=',
+          'Logical: and, or, not',
+          'Assignment: =, +=, -=, *=',
+          'Bitwise: &, |, ^, ~, <<, >>'
+        ]
+      },
+      { heading: 'Comments in Python',
+        content: 'Comments explain code and are ignored by Python:',
+        keypoint: 'Single-line comment starts with #. Multi-line uses triple quotes """ or \'\'\'.'
+      }
+    ],
+    examples: [
+      { title: 'Basic Variables',
+        code: `# Declaring variables in Python
+name = "Mateen"       # string
+age = 17              # integer
+marks = 95.5          # float
+passed = True         # boolean
+
+print("Name:", name)
+print("Age:", age)
+print("Marks:", marks)
+print("Passed:", passed)` },
+      { title: 'Input and Type Conversion',
+        code: `# Getting user input
+name = input("Enter your name: ")
+age = int(input("Enter your age: "))
+
+print("Hello,", name)
+print("In 5 years you will be", age + 5)` },
+      { title: 'Arithmetic Operators',
+        code: `a = 15
+b = 4
+
+print(a + b)   # 19  (addition)
+print(a - b)   # 11  (subtraction)
+print(a * b)   # 60  (multiplication)
+print(a / b)   # 3.75 (division)
+print(a // b)  # 3   (floor division)
+print(a % b)   # 3   (modulo/remainder)
+print(a ** b)  # 50625 (15 to power 4)` }
+    ],
+    simType: 'python',
+    quiz: [
+      { q: 'What data type is: name = "Hassan"?', opts: ['int','bool','float','str'], ans: 3, exp: 'Values in double or single quotes are strings (str) in Python.' },
+      { q: 'What does // operator do in Python?', opts: ['Division','Remainder','Floor Division','Power'], ans: 2, exp: '// is floor division — divides and returns the integer part only.' },
+      { q: 'What function reads input from user?', opts: ['read()','get()','input()','scan()'], ans: 2, exp: 'input() function reads a string from the user keyboard.' },
+      { q: 'What is the output of: print(10 % 3)?', opts: ['3','1','2','0'], ans: 1, exp: '10 % 3 = 1 (10 divided by 3 gives remainder 1)' },
+      { q: 'How do you write a single-line comment in Python?', opts: ['//', '/* */', '#', '--'], ans: 2, exp: 'In Python, single-line comments start with the # character.' }
+    ]
+  },
+  {
+    id: 6, icon: '🔀', title: 'Control Structures',
+    desc: 'if/else, loops, conditionals',
+    color: '#ff2d78',
+    learn: [
+      { heading: 'Sequential Execution',
+        content: 'By default, Python executes code line by line from top to bottom. Control structures change this flow.',
+      },
+      { heading: 'Conditional Statements (if/elif/else)',
+        content: 'Used to execute code only when a condition is True.',
+        keypoint: 'Python uses indentation (4 spaces) instead of curly braces to define code blocks.'
+      },
+      { heading: 'Loops — for Loop',
+        content: 'The for loop iterates over a sequence (list, string, range).',
+        points: [
+          'range(n): generates 0,1,2...n-1',
+          'range(start, end): generates start to end-1',
+          'range(start, end, step): with step value'
+        ]
+      },
+      { heading: 'Loops — while Loop',
+        content: 'The while loop repeats as long as condition is True.',
+        keypoint: 'Always ensure the while condition eventually becomes False to avoid infinite loops!'
+      },
+      { heading: 'Loop Control: break and continue',
+        content: 'break: exits the loop immediately. continue: skips current iteration and goes to next.',
+      }
+    ],
+    examples: [
+      { title: 'if/elif/else',
+        code: `marks = int(input("Enter marks: "))
+
+if marks >= 90:
+    print("Grade: A")
+elif marks >= 75:
+    print("Grade: B")
+elif marks >= 60:
+    print("Grade: C")
+elif marks >= 40:
+    print("Grade: D")
+else:
+    print("Grade: F — Failed")`
+      },
+      { title: 'for Loop',
+        code: `# Print multiplication table
+n = 5
+for i in range(1, 11):
+    print(n, "×", i, "=", n * i)
+
+# Sum of 1 to 100
+total = 0
+for i in range(1, 101):
+    total += i
+print("Sum:", total)  # 5050`
+      },
+      { title: 'while Loop',
+        code: `# Countdown
+count = 5
+while count > 0:
+    print("Count:", count)
+    count -= 1
+print("Blast off! 🚀")
+
+# break example
+for i in range(10):
+    if i == 5:
+        break
+    print(i)  # prints 0,1,2,3,4`
+      }
+    ],
+    simType: 'python',
+    quiz: [
+      { q: 'What is the output of: range(2, 8, 2)?', opts: ['[2,4,6,8]','[2,4,6]','[2,3,4,5,6,7]','[2,8,2]'], ans: 1, exp: 'range(2,8,2) generates: 2, 4, 6 (stops before 8, step=2)' },
+      { q: 'Which keyword exits a loop immediately?', opts: ['exit','return','continue','break'], ans: 3, exp: 'break statement immediately terminates the innermost loop.' },
+      { q: 'What does continue do in a loop?', opts: ['Ends loop','Skips current iteration','Repeats loop','Exits program'], ans: 1, exp: 'continue skips the rest of the current iteration and moves to next.' },
+      { q: 'Python code blocks are defined by:', opts: ['Curly braces {}','Parentheses ()','Indentation','Semicolons ;'], ans: 2, exp: 'Python uses indentation (spaces/tabs) to define code blocks.' },
+      { q: 'What is output of: for i in range(3): print(i)?', opts: ['1 2 3','0 1 2 3','0 1 2','1 2'], ans: 2, exp: 'range(3) generates 0, 1, 2 — it starts at 0 and excludes 3.' }
+    ]
+  },
+  {
+    id: 7, icon: '🧩', title: 'Functions',
+    desc: 'Defining, calling, scope, recursion',
+    color: '#00d4ff',
+    learn: [
+      { heading: 'What is a Function?',
+        content: 'A function is a named, reusable block of code that performs a specific task. It is defined once and can be called multiple times.',
+        keypoint: 'DRY Principle: Don\'t Repeat Yourself — functions avoid code duplication.'
+      },
+      { heading: 'Defining and Calling Functions',
+        content: 'Use def keyword to define a function. Call it by name with ().',
+        points: [
+          'def function_name(parameters):',
+          '    # function body',
+          '    return value  # optional'
+        ]
+      },
+      { heading: 'Parameters and Arguments',
+        content: 'Parameters are variables in the function definition. Arguments are values passed when calling.',
+        points: [
+          'Positional arguments: order matters',
+          'Default arguments: def greet(name="World")',
+          'Keyword arguments: greet(name="Ali")',
+          '*args: variable number of arguments',
+          '**kwargs: keyword arguments as dictionary'
+        ]
+      },
+      { heading: 'Scope',
+        content: 'Scope determines where a variable is accessible:',
+        points: [
+          'Local scope: variable inside function',
+          'Global scope: variable outside all functions',
+          'global keyword: access global inside function'
+        ]
+      },
+      { heading: 'Recursion',
+        content: 'A function that calls itself is recursive. Must have a BASE CASE to prevent infinite recursion.',
+        keypoint: 'Classic examples: factorial, Fibonacci, binary search.'
+      }
+    ],
+    examples: [
+      { title: 'Basic Functions',
+        code: `# Function to calculate area
+def area_rectangle(length, width):
+    area = length * width
+    return area
+
+# Calling the function
+a = area_rectangle(5, 3)
+print("Area:", a)  # Area: 15
+
+# Function with default parameter
+def greet(name="Student"):
+    print("Hello,", name + "!")
+
+greet("Mateen")   # Hello, Mateen!
+greet()           # Hello, Student!`
+      },
+      { title: 'Recursion — Factorial',
+        code: `def factorial(n):
+    # Base case
+    if n == 0 or n == 1:
+        return 1
+    # Recursive case
+    return n * factorial(n - 1)
+
+print(factorial(5))  # 120
+# 5! = 5×4×3×2×1 = 120`
+      }
+    ],
+    simType: 'python',
+    quiz: [
+      { q: 'Which keyword is used to define a function in Python?', opts: ['function','func','define','def'], ans: 3, exp: 'Python uses "def" keyword to define functions.' },
+      { q: 'What does "return" do?', opts: ['Prints value','Ends program','Sends value back to caller','Creates variable'], ans: 2, exp: 'return statement exits the function and sends a value back to where it was called.' },
+      { q: 'What is a recursive function?', opts: ['Calls another function','Has no parameters','Calls itself','Runs infinitely'], ans: 2, exp: 'A recursive function is one that calls itself in its body.' },
+      { q: 'What is factorial(0)?', opts: ['0','undefined','-1','1'], ans: 3, exp: 'By definition, 0! = 1. This is also the base case in recursive factorial.' },
+      { q: 'Variable inside function cannot be accessed outside. This is called:', opts: ['Global scope','Module scope','Local scope','Block scope'], ans: 2, exp: 'Variables created inside a function have local scope — only accessible within that function.' }
+    ]
+  },
+  {
+    id: 8, icon: '📋', title: 'Data Structures: Lists & Tuples',
+    desc: 'Collections, indexing, operations',
+    color: '#ff6b35',
+    learn: [
+      { heading: 'What is a List?',
+        content: 'A list is an ordered, mutable (changeable) collection of items. Items can be of different types.',
+        keypoint: 'Lists use square brackets: my_list = [1, "hello", 3.14, True]'
+      },
+      { heading: 'List Indexing',
+        content: 'Items are accessed by index. Indexing starts at 0.',
+        points: [
+          'Positive indexing: 0, 1, 2, ... (left to right)',
+          'Negative indexing: -1, -2, ... (right to left)',
+          'Slicing: list[start:end:step]'
+        ]
+      },
+      { heading: 'List Methods',
+        content: 'Common built-in list methods:',
+        points: [
+          'append(x): add x to end',
+          'insert(i, x): insert x at index i',
+          'remove(x): remove first occurrence of x',
+          'pop(i): remove and return item at index i',
+          'sort(): sort list in ascending order',
+          'reverse(): reverse list',
+          'len(list): number of items'
+        ]
+      },
+      { heading: 'Tuples',
+        content: 'A tuple is an ordered, IMMUTABLE (cannot change) collection.',
+        keypoint: 'Tuples use parentheses: my_tuple = (1, 2, 3). They are faster than lists and used for fixed data.'
+      },
+      { heading: 'List vs Tuple',
+        content: 'Key differences:',
+        points: [
+          'List: mutable (can change), uses [ ]',
+          'Tuple: immutable (cannot change), uses ( )',
+          'List: slightly slower',
+          'Tuple: faster, less memory',
+          'Tuple: can be used as dictionary key'
+        ]
+      }
+    ],
+    examples: [
+      { title: 'List Operations',
+        code: `marks = [85, 92, 78, 95, 88]
+
+print(marks[0])      # 85 (first item)
+print(marks[-1])     # 88 (last item)
+print(marks[1:4])    # [92, 78, 95]
+
+marks.append(91)     # add 91 to end
+marks.sort()         # sort ascending
+print(marks)         # [78, 85, 88, 91, 92, 95]
+print(len(marks))    # 6`
+      },
+      { title: 'Tuple Usage',
+        code: `# Immutable coordinates
+point = (10, 20)
+print(point[0])   # 10
+print(point[1])   # 20
+
+# Unpacking tuple
+x, y = point
+print("X:", x, "Y:", y)
+
+# Tuple cannot be changed:
+# point[0] = 5  → TypeError!`
+      }
+    ],
+    simType: 'none',
+    quiz: [
+      { q: 'What index is the LAST item in a list of 5 elements?', opts: ['5','-1','4','-2'], ans: 2, exp: 'A list of 5 items has indices 0,1,2,3,4. Last item is at index 4 (or -1).' },
+      { q: 'What is the difference between list and tuple?', opts: ['List uses ()','Tuple is mutable','List is immutable','List is mutable, tuple is immutable'], ans: 3, exp: 'Lists are mutable (can be changed), tuples are immutable (cannot be changed).' },
+      { q: 'Which method adds an item to the END of a list?', opts: ['insert()','add()','push()','append()'], ans: 3, exp: 'list.append(x) adds item x to the end of the list.' },
+      { q: 'What does list[1:4] return from [10,20,30,40,50]?', opts: ['[10,20,30]','[20,30,40]','[20,30,40,50]','[10,20,30,40]'], ans: 1, exp: 'Slicing list[1:4] returns items at index 1,2,3 which is [20,30,40].' },
+      { q: 'Tuples are defined using:', opts: ['Square brackets []','Curly braces {}','Angle brackets <>','Parentheses ()'], ans: 3, exp: 'Tuples use parentheses: my_tuple = (1, 2, 3)' }
+    ]
+  },
+  {
+    id: 9, icon: '🔤', title: 'Strings',
+    desc: 'String operations, methods, formatting',
+    color: '#7c3aed',
+    learn: [
+      { heading: 'Strings in Python',
+        content: 'A string is an ordered, immutable sequence of characters. Use single or double quotes.',
+        keypoint: 'Strings are sequences — each character has an index.'
+      },
+      { heading: 'String Operations',
+        content: 'Operations on strings:',
+        points: [
+          'Concatenation: "Hello" + " World" → "Hello World"',
+          'Repetition: "Hi" * 3 → "HiHiHi"',
+          'Indexing: s[0] gets first character',
+          'Slicing: s[2:5] gets substring',
+          'in operator: "lo" in "Hello" → True'
+        ]
+      },
+      { heading: 'String Methods',
+        content: 'Important built-in string methods:',
+        points: [
+          'upper() / lower(): change case',
+          'strip(): remove leading/trailing whitespace',
+          'split(sep): split into list',
+          'replace(old, new): replace substring',
+          'find(sub): find index of substring',
+          'len(s): length of string',
+          'count(sub): count occurrences'
+        ]
+      },
+      { heading: 'String Formatting',
+        content: 'Ways to format strings:',
+        points: [
+          'f-strings (Python 3.6+): f"Hello {name}"',
+          '.format(): "Hello {}".format(name)',
+          '% formatting: "Hello %s" % name'
+        ]
+      },
+      { heading: 'Escape Characters',
+        content: 'Special characters in strings:',
+        points: [
+          '\\n — newline',
+          '\\t — tab',
+          '\\\\ — backslash',
+          '\\"  — double quote inside string'
+        ]
+      }
+    ],
+    examples: [
+      { title: 'String Basics',
+        code: `s = "Hello, JKBOSE!"
+
+print(s[0])       # H
+print(s[-1])      # !
+print(s[7:13])    # JKBOSE
+print(len(s))     # 14
+
+# String methods
+print(s.upper())  # HELLO, JKBOSE!
+print(s.lower())  # hello, jkbose!
+print(s.replace("JKBOSE", "World"))`
+      },
+      { title: 'f-Strings (Formatting)',
+        code: `name = "Mateen"
+subject = "Computer Science"
+score = 95
+
+# f-string formatting
+msg = f"Student: {name} | Subject: {subject} | Score: {score}%"
+print(msg)
+
+# Math in f-string
+a, b = 7, 3
+print(f"{a} + {b} = {a+b}")`
+      }
+    ],
+    simType: 'python',
+    quiz: [
+      { q: 'What does s.upper() do?', opts: ['Converts to lowercase','Reverses string','Converts to uppercase','Removes spaces'], ans: 2, exp: 'str.upper() converts all characters to uppercase.' },
+      { q: 'Output of: "Ha" * 3?', opts: ['Ha Ha Ha','HaHaHa','Ha3','Error'], ans: 1, exp: 'String repetition: "Ha" * 3 = "HaHaHa"' },
+      { q: 'What is len("Python")?', opts: ['5','7','6','8'], ans: 2, exp: '"Python" has 6 characters: P-y-t-h-o-n' },
+      { q: 'Which method splits a string into a list?', opts: ['split()','join()','cut()','divide()'], ans: 0, exp: 'str.split(sep) splits the string at sep and returns a list.' },
+      { q: 'What escape character adds a new line?', opts: ['\\t','\\r','\\b','\\n'], ans: 3, exp: '\\n is the newline escape character — moves cursor to the next line.' }
+    ]
+  },
+  {
+    id: 10, icon: '⚡', title: 'Basic Algorithms',
+    desc: 'Searching, sorting, complexity',
+    color: '#00ff88',
+    learn: [
+      { heading: 'What is an Algorithm?',
+        content: 'An algorithm is a precise step-by-step procedure for solving a computational problem efficiently.',
+        keypoint: 'Algorithm efficiency is measured using Time Complexity and Space Complexity.'
+      },
+      { heading: 'Linear Search',
+        content: 'Checks each element one by one until found or end is reached.',
+        points: [
+          'Works on unsorted lists',
+          'Time Complexity: O(n) — linear time',
+          'Best case: O(1) — first element',
+          'Worst case: O(n) — last or not found'
+        ]
+      },
+      { heading: 'Binary Search',
+        content: 'Works on SORTED lists. Repeatedly divides search space in half.',
+        points: [
+          'List MUST be sorted',
+          'Compare with middle element',
+          'If equal: found! If less: search left half, if more: search right half',
+          'Time Complexity: O(log n) — much faster than linear'
+        ]
+      },
+      { heading: 'Bubble Sort',
+        content: 'Repeatedly swaps adjacent elements that are in wrong order. "Bubbles" largest to end.',
+        points: [
+          'Simple to understand and implement',
+          'Time Complexity: O(n²) — slow for large data',
+          'Space Complexity: O(1) — in-place',
+          'Stable sort'
+        ]
+      },
+      { heading: 'Big O Notation',
+        content: 'Describes how algorithm performance scales with input size:',
+        points: [
+          'O(1): constant — always same time',
+          'O(log n): logarithmic — binary search',
+          'O(n): linear — linear search',
+          'O(n²): quadratic — bubble sort',
+          'O(2ⁿ): exponential — very slow'
+        ]
+      }
+    ],
+    examples: [
+      { title: 'Linear Search in Python',
+        code: `def linear_search(lst, target):
+    for i in range(len(lst)):
+        if lst[i] == target:
+            return i  # return index
+    return -1  # not found
+
+numbers = [4, 7, 2, 9, 1, 5]
+result = linear_search(numbers, 9)
+print("Found at index:", result)  # 3`
+      },
+      { title: 'Binary Search',
+        code: `def binary_search(lst, target):
+    low, high = 0, len(lst) - 1
+    while low <= high:
+        mid = (low + high) // 2
+        if lst[mid] == target:
+            return mid
+        elif lst[mid] < target:
+            low = mid + 1
+        else:
+            high = mid - 1
+    return -1
+
+sorted_nums = [1, 3, 5, 7, 9, 11, 15]
+print(binary_search(sorted_nums, 7))  # 3`
+      },
+      { title: 'Bubble Sort',
+        code: `def bubble_sort(lst):
+    n = len(lst)
+    for i in range(n-1):
+        for j in range(n-i-1):
+            if lst[j] > lst[j+1]:
+                lst[j], lst[j+1] = lst[j+1], lst[j]
+    return lst
+
+arr = [64, 34, 25, 12, 22, 11, 90]
+print(bubble_sort(arr))
+# [11, 12, 22, 25, 34, 64, 90]`
+      }
+    ],
+    simType: 'sort',
+    quiz: [
+      { q: 'What is the time complexity of Binary Search?', opts: ['O(n)','O(n²)','O(1)','O(log n)'], ans: 3, exp: 'Binary Search has O(log n) time complexity because it halves the search space each step.' },
+      { q: 'Binary Search requires the list to be:', opts: ['Unsorted','Sorted','Empty','Numeric only'], ans: 1, exp: 'Binary Search only works on SORTED lists.' },
+      { q: 'Bubble Sort time complexity is:', opts: ['O(log n)','O(1)','O(n²)','O(n)'], ans: 2, exp: 'Bubble sort uses nested loops, making it O(n²) — quadratic time.' },
+      { q: 'Which algorithm checks elements one by one?', opts: ['Binary Search','Merge Sort','Quick Sort','Linear Search'], ans: 3, exp: 'Linear Search checks each element sequentially from start to end.' },
+      { q: 'O(1) means:', opts: ['Infinite time','Linear time','Constant time','Logarithmic time'], ans: 2, exp: 'O(1) = constant time — algorithm takes same time regardless of input size.' }
+    ]
+  }
+];
+
+// =============================================
+//  APP STATE & STORAGE
+// =============================================
+let currentChapterIndex = 0;
+let currentQuizChapter = 0;
+let quizQuestions = [];
+let quizCurrent = 0;
+let quizScore = 0;
+let selectedQuizChapter = 0;
+let deferredInstallPrompt = null;
+
+// LocalStorage helpers
+function saveProgress(key, val) {
+  try { localStorage.setItem('csapp_' + key, JSON.stringify(val)); } catch(e){}
+}
+function loadProgress(key, def) {
+  try {
+    const v = localStorage.getItem('csapp_' + key);
+    return v !== null ? JSON.parse(v) : def;
+  } catch(e) { return def; }
+}
+function getCompletedChapters() { return loadProgress('completed', []); }
+function getQuizScores() { return loadProgress('scores', {}); }
+function getQuizCount() { return loadProgress('quizcount', 0); }
+function setChapterComplete(id) {
+  let c = getCompletedChapters();
+  if (!c.includes(id)) { c.push(id); saveProgress('completed', c); }
+}
+function saveQuizScore(chId, score, total) {
+  let s = getQuizScores();
+  s[chId] = { score, total, date: Date.now() };
+  saveProgress('scores', s);
+  saveProgress('quizcount', getQuizCount() + 1);
+}
+
+// =============================================
+//  PARTICLE ANIMATION (Splash)
+// =============================================
+function initParticles() {
+  const container = document.getElementById('particles');
+  const codeSnippets = ['01', '{}', '[]', '//', '&&', '!=', '++', 'if', 'for', '>>'];
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.textContent = codeSnippets[Math.floor(Math.random() * codeSnippets.length)];
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.animationDuration = (6 + Math.random() * 10) + 's';
+    p.style.animationDelay = (Math.random() * 8) + 's';
+    p.style.fontSize = (10 + Math.random() * 10) + 'px';
+    container.appendChild(p);
+  }
+}
+
+// =============================================
+//  SCREEN NAVIGATION
+// =============================================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function startApp() {
+  showScreen('dashboard-screen');
+  renderChapterList();
+  updateOverallProgress();
+}
+
+function showDashboard() {
+  showScreen('dashboard-screen');
+  renderChapterList();
+  updateOverallProgress();
+}
+
+function showQuiz() {
+  showScreen('quiz-screen');
+  renderQuizChapterSelect();
+  document.getElementById('quizChapterSelect').style.display = 'block';
+  document.getElementById('quizActive').style.display = 'none';
+  updateBottomNav('quiz-screen');
+}
+
+function showAlgo() {
+  showScreen('algo-screen');
+  updateBottomNav('algo-screen');
+  setTimeout(() => {
+    initSortCanvas();
+    drawGate();
+    convertNumber();
+  }, 100);
+}
+
+function showProgress() {
+  showScreen('progress-screen');
+  updateBottomNav('progress-screen');
+  renderProgressScreen();
+}
+
+function showSim(simType) {
+  showAlgo();
+  setTimeout(() => {
+    const el = document.getElementById('numconv');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  }, 200);
+}
+
+function updateBottomNav(screenId) {
+  // Update bottom nav active state in all nav bars
+}
+
+// =============================================
+//  CHAPTER LIST RENDERING
+// =============================================
+function renderChapterList() {
+  const container = document.getElementById('chapterList');
+  const completed = getCompletedChapters();
+  container.innerHTML = CHAPTERS.map((ch, i) => {
+    const done = completed.includes(ch.id);
+    return `
+      <div class="chapter-item ${done ? 'completed' : ''}" onclick="openChapter(${i})">
+        <div class="chapter-num" style="background:linear-gradient(135deg,${ch.color},${adjustColor(ch.color)})">${ch.id}</div>
+        <div class="chapter-info">
+          <div class="chapter-name">${ch.icon} ${ch.title}</div>
+          <div class="chapter-desc">${ch.desc}</div>
+        </div>
+        ${done ? '<span class="chapter-done-mark">✓</span>' : '<span class="chapter-arrow">›</span>'}
+      </div>`;
+  }).join('');
+}
+
+function adjustColor(hex) {
+  // darken slightly
+  return hex.replace(/^#/, '#0');
+}
+
+function updateOverallProgress() {
+  const completed = getCompletedChapters();
+  const pct = Math.round((completed.length / CHAPTERS.length) * 100);
+  document.getElementById('overallPercent').textContent = pct + '%';
+  document.getElementById('overallBar').style.width = pct + '%';
+}
+
+// =============================================
+//  CHAPTER DETAIL
+// =============================================
+function openChapter(index) {
+  currentChapterIndex = index;
+  const ch = CHAPTERS[index];
+  document.getElementById('chapterNavTitle').textContent = ch.title;
+  document.getElementById('chapterNavIcon').textContent = ch.icon;
+  showScreen('chapter-screen');
+  renderChapterContent(ch);
+  // Switch to learn tab
+  switchTab('learn', document.querySelector('.tab-btn'));
+}
+
+function switchTab(tabName, btn) {
+  // Update tab buttons
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  // Update panels
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('tab-' + tabName);
+  if (panel) panel.classList.add('active');
+}
+
+function renderChapterContent(ch) {
+  // LEARN TAB
+  const learnPanel = document.getElementById('tab-learn');
+  learnPanel.innerHTML = ch.learn.map(section => `
+    <div class="concept-card">
+      <h3>${section.heading}</h3>
+      <p>${section.content || ''}</p>
+      ${section.points ? '<ul>' + section.points.map(p => `<li>${p}</li>`).join('') + '</ul>' : ''}
+      ${section.keypoint ? `<div class="key-point"><strong>💡 Key Point:</strong> ${section.keypoint}</div>` : ''}
+    </div>
+  `).join('');
+
+  // EXAMPLES TAB
+  const exPanel = document.getElementById('tab-examples');
+  exPanel.innerHTML = ch.examples.map(ex => `
+    <div class="concept-card">
+      <h3>📌 ${ex.title}</h3>
+      ${ex.text ? `<p>${ex.text}</p>` : ''}
+      ${ex.code ? `<div class="code-block"><span class="code-label">// Code</span><pre>${escapeHtml(ex.code)}</pre></div>` : ''}
+    </div>
+  `).join('');
+
+  // SIMULATION TAB
+  const simPanel = document.getElementById('tab-simulation');
+  simPanel.innerHTML = buildSimulation(ch);
+
+  // PRACTICE TAB
+  const practicePanel = document.getElementById('tab-practice');
+  practicePanel.innerHTML = buildPractice(ch);
+
+  // QUIZ TAB (mini quiz inline)
+  const quizPanel = document.getElementById('tab-quiz');
+  quizPanel.innerHTML = buildInlineQuiz(ch);
+}
+
+function buildSimulation(ch) {
+  if (ch.simType === 'numconv') {
+    return `
+      <div class="sim-container" id="chNumconv">
+        <div class="sim-title"><span class="sim-icon">🔢</span>Number System Converter</div>
+        <div class="converter-input">
+          <input type="text" id="chNumInput" placeholder="Enter number..." value="42">
+          <select id="chNumBase" class="converter-select">
+            <option value="10">Decimal</option>
+            <option value="2">Binary</option>
+            <option value="16">Hex</option>
+            <option value="8">Octal</option>
+          </select>
+          <button class="convert-btn" onclick="convertCh()">Convert</button>
+        </div>
+        <div class="converter-result" id="chConvResult">
+          <div class="result-box"><div class="result-box-label">Decimal</div><div class="result-box-value" id="chResDec">42</div></div>
+          <div class="result-box"><div class="result-box-label">Binary</div><div class="result-box-value" id="chResBin">101010</div></div>
+          <div class="result-box"><div class="result-box-label">Octal</div><div class="result-box-value" id="chResOct">52</div></div>
+          <div class="result-box"><div class="result-box-label">Hex</div><div class="result-box-value" id="chResHex">2A</div></div>
+        </div>
+      </div>`;
+  } else if (ch.simType === 'gate') {
+    return `
+      <div class="sim-container">
+        <div class="sim-title"><span class="sim-icon">⚡</span>Logic Gate Simulator</div>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">Go to the Algorithm Lab for the full interactive gate simulator! ⚙️</p>
+        <button class="convert-btn" onclick="showAlgo()">Open Lab →</button>
+      </div>
+      <div class="concept-card">
+        <h3>Truth Tables at a Glance</h3>
+        <div class="code-block"><pre>AND: 0·0=0, 0·1=0, 1·0=0, 1·1=1
+OR:  0+0=0, 0+1=1, 1+0=1, 1+1=1
+NOT: 0→1,  1→0
+XOR: 0⊕0=0, 0⊕1=1, 1⊕0=1, 1⊕1=0</pre></div>
+      </div>`;
+  } else if (ch.simType === 'python') {
+    return `
+      <div class="sim-container">
+        <div class="sim-title"><span class="sim-icon">🐍</span>Python Playground</div>
+        <textarea class="py-editor" id="chPyCode" spellcheck="false">${getDefaultCode(ch)}</textarea>
+        <button class="py-run-btn" onclick="runChPython()">▶ Run Code</button>
+        <div class="code-label">Output:</div>
+        <div class="py-output" id="chPyOutput"># Output will appear here...</div>
+      </div>`;
+  } else if (ch.simType === 'sort') {
+    return `
+      <div class="sim-container">
+        <div class="sim-title"><span class="sim-icon">📊</span>Sorting Visualizer</div>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">Visit the Algorithm Lab for a full animated sorting visualizer!</p>
+        <button class="convert-btn" onclick="showAlgo()">Open Algorithm Lab →</button>
+      </div>
+      <div class="concept-card">
+        <h3>Bubble Sort Trace</h3>
+        <div class="code-block"><pre>Array: [5, 3, 8, 1, 9, 2]
+Pass 1: [3,5,1,8,2,9] → 9 bubbles to end
+Pass 2: [3,1,5,2,8,9] → 8 in place
+Pass 3: [1,3,2,5,8,9] → continuing...
+Pass 4: [1,2,3,5,8,9] → sorted!</pre></div>
+      </div>`;
+  } else {
+    return `<div class="info-box note">💡 Visit the Algorithm Lab for interactive simulations!</div>
+    <div class="concept-card">
+      <h3>🔬 Interactive Tools Available</h3>
+      <p>Use the Algorithm Lab (⚙️ tab at bottom) to access:<br><br>
+      • Number System Converter<br>
+      • Logic Gate Simulator<br>
+      • Sorting Algorithm Visualizer<br>
+      • Python Code Playground</p>
+    </div>`;
+  }
+}
+
+function getDefaultCode(ch) {
+  if (ch.id === 5) return `# Python Basics Demo
+name = "Student"
+age = 17
+print("Name:", name)
+print("Age:", age)
+print("Type:", type(age))`;
+  if (ch.id === 6) return `# Control Structures Demo
+marks = 85
+if marks >= 90:
+    print("Grade: A")
+elif marks >= 75:
+    print("Grade: B")
+else:
+    print("Grade: C")
+
+for i in range(1, 6):
+    print("Count:", i)`;
+  if (ch.id === 7) return `# Functions Demo
+def add(a, b):
+    return a + b
+
+def factorial(n):
+    if n <= 1:
+        return 1
+    return n * factorial(n-1)
+
+print(add(5, 3))
+print(factorial(5))`;
+  if (ch.id === 9) return `# Strings Demo
+s = "Hello, JKBOSE!"
+print(s.upper())
+print(s.replace("JKBOSE", "World"))
+print(len(s))
+words = s.split(",")
+print(words)`;
+  return `# Python Code\nprint("Hello, World!")`;
+}
+
+function buildPractice(ch) {
+  const exercises = [
+    `<div class="concept-card">
+      <h3>📝 Exercise 1</h3>
+      <p>${getPracticeQ(ch, 0)}</p>
+      <div class="info-box tip">💡 Tip: Think about the core concept before writing code.</div>
+    </div>`,
+    `<div class="concept-card">
+      <h3>📝 Exercise 2</h3>
+      <p>${getPracticeQ(ch, 1)}</p>
+    </div>`,
+    `<div class="concept-card">
+      <h3>📝 Exercise 3 (Challenge)</h3>
+      <p>${getPracticeQ(ch, 2)}</p>
+      <div class="info-box warning">⚠️ Challenge: Try to solve this without hints first!</div>
+    </div>`
+  ];
+  return exercises.join('');
+}
+
+function getPracticeQ(ch, num) {
+  const practices = {
+    1: ['Draw the block diagram of a computer system with all components.', 'Differentiate between RAM and ROM with examples.', 'List 5 input and 5 output devices with their uses.'],
+    2: ['Convert decimal 156 to binary, octal, and hexadecimal.', 'Add binary numbers: 1011 + 0101 (binary addition).', 'Convert hexadecimal 3F8 to decimal.'],
+    3: ['Draw truth tables for AND, OR, NOT gates.', 'Verify De Morgan\'s theorem for A=1, B=0.', 'Design a circuit using gates that gives 1 only when both inputs are 0.'],
+    4: ['Write an algorithm to find the largest among three numbers.', 'Draw a flowchart to calculate the sum of first N natural numbers.', 'Write pseudo-code for checking if a number is prime.'],
+    5: ['Write a Python program that takes your name and age as input and prints a greeting.', 'Write a program to calculate the area of a circle (use pi=3.14).', 'Write a program to swap two numbers without using a third variable.'],
+    6: ['Write a Python program to print all even numbers from 1 to 50.', 'Write a program to check if a number is positive, negative, or zero.', 'Use a while loop to find the factorial of a number entered by the user.'],
+    7: ['Write a function that checks if a number is even or odd.', 'Write a recursive function to compute the nth Fibonacci number.', 'Write a function that takes a list and returns the largest element.'],
+    8: ['Create a list of 5 fruits and perform: add, remove, sort, and reverse.', 'Write a program to find the sum and average of a list of numbers.', 'Demonstrate the difference between list and tuple with an example.'],
+    9: ['Write a program to count the number of vowels in a string.', 'Reverse a string without using slicing.', 'Check if a string is a palindrome (reads same forward and backward).'],
+    10: ['Trace through bubble sort on: [9, 5, 3, 7, 1] step by step.', 'Implement linear search and count how many comparisons are made.', 'Compare binary search vs linear search for a list of 1000 sorted elements.']
+  };
+  return (practices[ch.id] || ['Practice exercise 1', 'Practice exercise 2', 'Practice exercise 3'])[num] || 'Complete this exercise.';
+}
+
+function buildInlineQuiz(ch) {
+  return `
+    <div class="concept-card">
+      <h3>🎯 Quick Quiz — ${ch.title}</h3>
+      <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px">
+        Test your understanding with ${ch.quiz.length} questions on this chapter.
+      </p>
+      <button class="start-btn" style="width:100%" onclick="startChapterQuiz(${ch.id - 1})">
+        Start Chapter Quiz ▶
+      </button>
+    </div>`;
+}
+
+function startChapterQuiz(chIndex) {
+  showQuiz();
+  selectedQuizChapter = chIndex;
+  document.querySelectorAll('.quiz-ch-btn').forEach((btn, i) => {
+    btn.classList.toggle('selected', i === chIndex);
+  });
+  startQuizForSelected();
+}
+
+// =============================================
+//  QUIZ ENGINE
+// =============================================
+function renderQuizChapterSelect() {
+  const container = document.getElementById('quizChBtns');
+  container.innerHTML = CHAPTERS.map((ch, i) => `
+    <div class="quiz-ch-btn ${i === selectedQuizChapter ? 'selected' : ''}"
+         onclick="selectQuizChapter(${i})">
+      <div class="quiz-ch-icon">${ch.icon}</div>
+      <div class="quiz-ch-name">${ch.title}</div>
+    </div>
+  `).join('');
+}
+
+function selectQuizChapter(i) {
+  selectedQuizChapter = i;
+  document.querySelectorAll('.quiz-ch-btn').forEach((btn, idx) => {
+    btn.classList.toggle('selected', idx === i);
+  });
+}
+
+function startQuizForSelected() {
+  currentQuizChapter = selectedQuizChapter;
+  const ch = CHAPTERS[currentQuizChapter];
+  quizQuestions = shuffleArr([...ch.quiz]);
+  quizCurrent = 0;
+  quizScore = 0;
+  document.getElementById('quizChapterSelect').style.display = 'none';
+  document.getElementById('quizActive').style.display = 'block';
+  renderQuestion();
+}
+
+function shuffleArr(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function renderQuestion() {
+  const container = document.getElementById('quizActive');
+  if (quizCurrent >= quizQuestions.length) {
+    showQuizScore();
+    return;
+  }
+  const q = quizQuestions[quizCurrent];
+  const letters = ['A', 'B', 'C', 'D'];
+  const pct = Math.round((quizCurrent / quizQuestions.length) * 100);
+
+  container.innerHTML = `
+    <div class="quiz-progress-bar">
+      <div class="quiz-progress-fill" style="width:${pct}%"></div>
+    </div>
+    <div class="question-card">
+      <div class="q-num">Question ${quizCurrent + 1} of ${quizQuestions.length}</div>
+      <div class="q-text">${q.q}</div>
+      ${q.code ? `<div class="q-code">${escapeHtml(q.code)}</div>` : ''}
+      <div class="options-list" id="optsList">
+        ${q.opts.map((opt, i) => `
+          <button class="option-btn" onclick="selectAnswer(${i})" id="opt${i}">
+            <span class="option-letter">${letters[i]}</span>
+            ${opt}
+          </button>
+        `).join('')}
+      </div>
+      <div class="quiz-feedback" id="quizFeedback"></div>
+    </div>
+    <div class="quiz-nav-btns">
+      <button class="quiz-nav-btn secondary" onclick="showQuizChapterSelect()">✕ Quit</button>
+      <button class="quiz-nav-btn primary" id="nextBtn" onclick="nextQuestion()" style="display:none">
+        ${quizCurrent + 1 === quizQuestions.length ? 'Finish 🏁' : 'Next →'}
+      </button>
+    </div>
+  `;
+}
+
+function selectAnswer(selected) {
+  const q = quizQuestions[quizCurrent];
+  const correct = q.ans;
+  const isCorrect = selected === correct;
+  if (isCorrect) quizScore++;
+
+  // Disable all buttons
+  document.querySelectorAll('.option-btn').forEach((btn, i) => {
+    btn.style.pointerEvents = 'none';
+    if (i === correct) btn.classList.add('correct');
+    if (i === selected && !isCorrect) btn.classList.add('wrong');
+  });
+
+  // Show feedback
+  const fb = document.getElementById('quizFeedback');
+  fb.className = `quiz-feedback show ${isCorrect ? 'correct-fb' : 'wrong-fb'}`;
+  fb.innerHTML = `${isCorrect ? '✅ Correct!' : '❌ Incorrect!'} ${q.exp}`;
+
+  // Show next
+  document.getElementById('nextBtn').style.display = 'inline-block';
+}
+
+function nextQuestion() {
+  quizCurrent++;
+  renderQuestion();
+}
+
+function showQuizChapterSelect() {
+  document.getElementById('quizChapterSelect').style.display = 'block';
+  document.getElementById('quizActive').style.display = 'none';
+}
+
+function showQuizScore() {
+  const total = quizQuestions.length;
+  const pct = Math.round((quizScore / total) * 100);
+  const ch = CHAPTERS[currentQuizChapter];
+
+  // Save score
+  saveQuizScore(ch.id, quizScore, total);
+  if (pct >= 60) setChapterComplete(ch.id);
+
+  let grade = pct >= 90 ? '🏆 Excellent!' : pct >= 75 ? '⭐ Great Job!' : pct >= 60 ? '👍 Good Work!' : '📚 Keep Studying!';
+  const container = document.getElementById('quizActive');
+  container.innerHTML = `
+    <div class="score-screen">
+      <div class="score-circle">
+        <div>
+          <div class="score-number">${pct}%</div>
+          <div class="score-label">${quizScore}/${total}</div>
+        </div>
+      </div>
+      <div class="score-msg">${grade}</div>
+      <div class="score-sub">
+        Chapter: ${ch.icon} ${ch.title}<br>
+        You got ${quizScore} out of ${total} correct.
+        ${pct >= 60 ? '<br><span style="color:var(--accent-green)">✓ Chapter marked complete!</span>' : ''}
+      </div>
+      <div class="score-actions">
+        <button class="score-btn primary" onclick="retryQuiz()">↺ Retry</button>
+        <button class="score-btn secondary" onclick="showQuizChapterSelect()">← Back</button>
+        <button class="score-btn secondary" onclick="showDashboard()">🏠 Home</button>
+      </div>
+    </div>`;
+}
+
+function retryQuiz() {
+  quizCurrent = 0;
+  quizScore = 0;
+  quizQuestions = shuffleArr([...CHAPTERS[currentQuizChapter].quiz]);
+  renderQuestion();
+}
+
+// =============================================
+//  PROGRESS SCREEN
+// =============================================
+function renderProgressScreen() {
+  const completed = getCompletedChapters();
+  const scores = getQuizScores();
+  const quizCount = getQuizCount();
+
+  // Stats
+  document.getElementById('statChapters').textContent = completed.length;
+  document.getElementById('statQuizzes').textContent = quizCount;
+
+  const scoreVals = Object.values(scores).map(s => Math.round((s.score/s.total)*100));
+  const avg = scoreVals.length ? Math.round(scoreVals.reduce((a,b)=>a+b,0)/scoreVals.length) : 0;
+  document.getElementById('statAvgScore').textContent = avg + '%';
+
+  // Streak (simple day tracking)
+  const lastDate = loadProgress('lastdate', null);
+  const today = new Date().toDateString();
+  let streak = loadProgress('streak', 0);
+  if (lastDate !== today) {
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+    streak = lastDate === yesterday ? streak + 1 : 1;
+    saveProgress('lastdate', today);
+    saveProgress('streak', streak);
+  }
+  document.getElementById('statStreak').textContent = '🔥' + streak;
+
+  // Chapter progress list
+  const list = document.getElementById('chProgressList');
+  list.innerHTML = CHAPTERS.map(ch => {
+    const sc = scores[ch.id];
+    const pct = sc ? Math.round((sc.score/sc.total)*100) : 0;
+    const done = completed.includes(ch.id);
+    return `
+      <div class="ch-progress-item">
+        <div class="ch-progress-header">
+          <span class="ch-progress-name">${ch.icon} ${ch.title}</span>
+          <span class="ch-progress-score">${sc ? pct + '%' : (done ? '✓' : '--')}</span>
+        </div>
+        <div class="ch-progress-bar">
+          <div class="ch-progress-fill" style="width:${done ? Math.max(pct, 60) : pct}%"></div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function resetProgress() {
+  if (confirm('Reset all progress? This cannot be undone.')) {
+    ['completed','scores','quizcount','lastdate','streak'].forEach(k => localStorage.removeItem('csapp_' + k));
+    renderProgressScreen();
+    showToast('Progress reset!', 'success');
+  }
+}
+
+// =============================================
+//  NUMBER CONVERTER (Algorithm Lab)
+// =============================================
+function convertNumber() {
+  const val = document.getElementById('numInput').value.trim();
+  const base = parseInt(document.getElementById('numBase').value);
+  if (!val) return;
+  try {
+    const dec = parseInt(val, base);
+    if (isNaN(dec)) { showToast('Invalid number!', 'error'); return; }
+    document.getElementById('resDec').textContent = dec;
+    document.getElementById('resBin').textContent = dec.toString(2);
+    document.getElementById('resOct').textContent = dec.toString(8);
+    document.getElementById('resHex').textContent = dec.toString(16).toUpperCase();
+  } catch(e) { showToast('Conversion error!', 'error'); }
+}
+
+function convertCh() {
+  const val = document.getElementById('chNumInput').value.trim();
+  const base = parseInt(document.getElementById('chNumBase').value);
+  if (!val) return;
+  try {
+    const dec = parseInt(val, base);
+    if (isNaN(dec)) return;
+    document.getElementById('chResDec').textContent = dec;
+    document.getElementById('chResBin').textContent = dec.toString(2);
+    document.getElementById('chResOct').textContent = dec.toString(8);
+    document.getElementById('chResHex').textContent = dec.toString(16).toUpperCase();
+  } catch(e) {}
+}
+
+// =============================================
+//  LOGIC GATE SIMULATOR
+// =============================================
+let gateInputA = 0, gateInputB = 0;
+
+function toggleGateInput(input) {
+  if (input === 'A') {
+    gateInputA = gateInputA === 0 ? 1 : 0;
+    document.getElementById('gateAVal').textContent = gateInputA;
+    const el = document.getElementById('gateA');
+    el.classList.toggle('on', gateInputA === 1);
+  } else {
+    gateInputB = gateInputB === 0 ? 1 : 0;
+    document.getElementById('gateBVal').textContent = gateInputB;
+    const el = document.getElementById('gateB');
+    el.classList.toggle('on', gateInputB === 1);
+  }
+  drawGate();
+}
+
+function computeGate(type, a, b) {
+  switch(type) {
+    case 'AND': return a & b;
+    case 'OR': return a | b;
+    case 'NOT': return a === 1 ? 0 : 1;
+    case 'NAND': return (a & b) === 1 ? 0 : 1;
+    case 'NOR': return (a | b) === 1 ? 0 : 1;
+    case 'XOR': return a ^ b;
+    default: return 0;
+  }
+}
+
+function drawGate() {
+  const canvas = document.getElementById('gateCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const type = document.getElementById('gateType').value;
+  const output = computeGate(type, gateInputA, gateInputB);
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Colors
+  const colOn = '#00ff88';
+  const colOff = '#ff2d78';
+  const colWire = '#445577';
+  const colGate = '#00d4ff';
+
+  const cx = W / 2, cy = H / 2;
+  const gW = 80, gH = 60;
+  const x1 = cx - gW/2, y1 = cy - gH/2;
+
+  // Input wires
+  const inLeft = x1 - 80;
+  const isNOT = type === 'NOT';
+
+  if (!isNOT) {
+    // Input A
+    ctx.beginPath();
+    ctx.moveTo(inLeft, cy - 16);
+    ctx.lineTo(x1, cy - 16);
+    ctx.strokeStyle = gateInputA ? colOn : colWire;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    // Input B
+    ctx.beginPath();
+    ctx.moveTo(inLeft, cy + 16);
+    ctx.lineTo(x1, cy + 16);
+    ctx.strokeStyle = gateInputB ? colOn : colWire;
+    ctx.stroke();
+
+    // Labels A, B
+    ctx.fillStyle = gateInputA ? colOn : '#8899bb';
+    ctx.font = 'bold 13px Courier New';
+    ctx.fillText('A=' + gateInputA, inLeft - 30, cy - 12);
+    ctx.fillStyle = gateInputB ? colOn : '#8899bb';
+    ctx.fillText('B=' + gateInputB, inLeft - 30, cy + 20);
+  } else {
+    ctx.beginPath();
+    ctx.moveTo(inLeft, cy);
+    ctx.lineTo(x1, cy);
+    ctx.strokeStyle = gateInputA ? colOn : colWire;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = gateInputA ? colOn : '#8899bb';
+    ctx.font = 'bold 13px Courier New';
+    ctx.fillText('A=' + gateInputA, inLeft - 30, cy + 5);
+  }
+
+  // Output wire
+  ctx.beginPath();
+  ctx.moveTo(x1 + gW, cy);
+  ctx.lineTo(x1 + gW + 80, cy);
+  ctx.strokeStyle = output ? colOn : colWire;
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Output label
+  ctx.fillStyle = output ? colOn : colOff;
+  ctx.font = 'bold 13px Courier New';
+  ctx.fillText('OUT=' + output, x1 + gW + 85, cy + 5);
+
+  // Draw gate shape
+  ctx.save();
+  ctx.strokeStyle = colGate;
+  ctx.lineWidth = 2.5;
+  ctx.fillStyle = 'rgba(0,212,255,0.08)';
+  ctx.beginPath();
+
+  if (type === 'AND' || type === 'NAND') {
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x1 + gW/2, y1);
+    ctx.arc(x1 + gW/2, cy, gH/2, -Math.PI/2, Math.PI/2);
+    ctx.lineTo(x1, y1 + gH);
+    ctx.closePath();
+  } else if (type === 'OR' || type === 'NOR') {
+    ctx.moveTo(x1, y1);
+    ctx.quadraticCurveTo(x1 + gW/3, cy, x1, y1 + gH);
+    ctx.quadraticCurveTo(x1 + gW*0.7, y1 + gH, x1 + gW, cy);
+    ctx.quadraticCurveTo(x1 + gW*0.7, y1, x1, y1);
+    ctx.closePath();
+  } else if (type === 'NOT') {
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x1 + gW - 10, cy);
+    ctx.lineTo(x1, y1 + gH);
+    ctx.closePath();
+  } else if (type === 'XOR') {
+    ctx.moveTo(x1, y1);
+    ctx.quadraticCurveTo(x1 + gW/3, cy, x1, y1 + gH);
+    ctx.quadraticCurveTo(x1 + gW*0.7, y1 + gH, x1 + gW, cy);
+    ctx.quadraticCurveTo(x1 + gW*0.7, y1, x1, y1);
+    ctx.closePath();
+  }
+  ctx.fill();
+  ctx.stroke();
+
+  // Bubble for NAND, NOR, NOT
+  if (type === 'NAND' || type === 'NOR' || type === 'NOT') {
+    ctx.beginPath();
+    ctx.arc(x1 + gW + 7, cy, 6, 0, Math.PI * 2);
+    ctx.fillStyle = output ? colOn : 'rgba(255,45,120,0.2)';
+    ctx.fill();
+    ctx.stroke();
+  }
+
+  // Gate label
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 14px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText(type, cx, cy + 5);
+  ctx.textAlign = 'left';
+  ctx.restore();
+
+  // Update output display
+  const outEl = document.getElementById('gateOutput');
+  outEl.textContent = `OUTPUT = ${output}`;
+  outEl.className = `gate-output-display out-${output}`;
+}
+
+// =============================================
+//  SORTING VISUALIZER
+// =============================================
+let sortArray = [];
+let sortAnimating = false;
+let sortAnimId = null;
+
+function initSortCanvas() {
+  sortArray = Array.from({length: 20}, () => Math.floor(Math.random() * 180) + 10);
+  drawSort(sortArray, [], []);
+}
+
+function resetSort() {
+  sortAnimating = false;
+  if (sortAnimId) clearTimeout(sortAnimId);
+  initSortCanvas();
+  document.getElementById('sortStatus').textContent = 'Press ▶ Run to start the animation';
+}
+
+function drawSort(arr, comparing=[], sorted=[]) {
+  const canvas = document.getElementById('sortCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const barW = Math.floor((W - 20) / arr.length);
+  const maxVal = Math.max(...arr);
+
+  arr.forEach((val, i) => {
+    const barH = Math.floor((val / maxVal) * (H - 30));
+    const x = 10 + i * barW;
+    const y = H - barH - 10;
+
+    let color = '#0080ff';
+    if (sorted.includes(i)) color = '#00ff88';
+    else if (comparing.includes(i)) color = '#ff2d78';
+
+    // Bar
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.roundRect ? ctx.roundRect(x+1, y, barW-2, barH, 3) : ctx.rect(x+1, y, barW-2, barH);
+    ctx.fill();
+
+    // Value label if bars are wide enough
+    if (barW > 18) {
+      ctx.fillStyle = '#fff';
+      ctx.font = '9px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(val, x + barW/2, y - 3);
+    }
+  });
+  ctx.textAlign = 'left';
+}
+
+async function startSort() {
+  if (sortAnimating) return;
+  sortAnimating = true;
+  const alg = document.getElementById('sortAlgoSelect').value;
+  const arr = [...sortArray];
+  const speedSlider = document.getElementById('sortSpeed');
+  const getDelay = () => Math.floor(600 / parseInt(speedSlider.value));
+
+  const updateDisplay = (arr, comparing=[], sorted=[]) => {
+    return new Promise(res => {
+      drawSort(arr, comparing, sorted);
+      sortAnimId = setTimeout(res, getDelay());
+    });
+  };
+
+  if (alg === 'bubble') {
+    document.getElementById('sortStatus').textContent = '🔵 Bubble Sort running...';
+    const n = arr.length;
+    const sortedSet = new Set();
+    for (let i = 0; i < n - 1 && sortAnimating; i++) {
+      for (let j = 0; j < n - i - 1 && sortAnimating; j++) {
+        await updateDisplay(arr, [j, j+1], [...sortedSet]);
+        if (arr[j] > arr[j+1]) {
+          [arr[j], arr[j+1]] = [arr[j+1], arr[j]];
+          await updateDisplay(arr, [j, j+1], [...sortedSet]);
+        }
+      }
+      sortedSet.add(n - i - 1);
+    }
+    sortedSet.add(0);
+    drawSort(arr, [], [...sortedSet]);
+  } else if (alg === 'selection') {
+    document.getElementById('sortStatus').textContent = '🟠 Selection Sort running...';
+    const n = arr.length;
+    const sortedSet = new Set();
+    for (let i = 0; i < n - 1 && sortAnimating; i++) {
+      let minIdx = i;
+      for (let j = i + 1; j < n && sortAnimating; j++) {
+        await updateDisplay(arr, [minIdx, j], [...sortedSet]);
+        if (arr[j] < arr[minIdx]) minIdx = j;
+      }
+      if (minIdx !== i) {
+        [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
+      }
+      sortedSet.add(i);
+      await updateDisplay(arr, [], [...sortedSet]);
+    }
+    sortedSet.add(n - 1);
+    drawSort(arr, [], [...sortedSet]);
+  } else if (alg === 'insertion') {
+    document.getElementById('sortStatus').textContent = '🟣 Insertion Sort running...';
+    const n = arr.length;
+    for (let i = 1; i < n && sortAnimating; i++) {
+      let key = arr[i], j = i - 1;
+      while (j >= 0 && arr[j] > key && sortAnimating) {
+        await updateDisplay(arr, [j, j+1], []);
+        arr[j+1] = arr[j];
+        j--;
+      }
+      arr[j+1] = key;
+      await updateDisplay(arr, [j+1], []);
+    }
+    drawSort(arr, [], Array.from({length: arr.length}, (_, i) => i));
+  }
+
+  sortArray = arr;
+  sortAnimating = false;
+  document.getElementById('sortStatus').textContent = '✅ Sorting complete!';
+}
+
+// =============================================
+//  PYTHON SIMULATOR (JS-based interpreter)
+// =============================================
+function runPython() {
+  const code = document.getElementById('pyCode').value;
+  const output = simulatePython(code);
+  document.getElementById('pyOutput').textContent = output;
+}
+
+function runChPython() {
+  const code = document.getElementById('chPyCode').value;
+  const output = simulatePython(code);
+  document.getElementById('chPyOutput').textContent = output;
+}
+
+function simulatePython(code) {
+  // A simplified Python-to-JS interpreter
+  let output = '';
+  const lines = code.split('\n');
+  const variables = {};
+  let i = 0;
+  const maxLines = 500;
+  let execCount = 0;
+
+  function evalExpr(expr, vars) {
+    expr = expr.trim();
+    // Handle string literals
+    if ((expr.startsWith('"') && expr.endsWith('"')) ||
+        (expr.startsWith("'") && expr.endsWith("'"))) {
+      return expr.slice(1, -1);
+    }
+    // Boolean
+    if (expr === 'True') return true;
+    if (expr === 'False') return false;
+    if (expr === 'None') return null;
+    // Substitute variables
+    let subbed = expr;
+    // Replace variable names
+    Object.keys(vars).sort((a,b) => b.length - a.length).forEach(k => {
+      const re = new RegExp('\\b' + k + '\\b', 'g');
+      let val = vars[k];
+      if (typeof val === 'string') val = JSON.stringify(val);
+      else if (val === true) val = 'true';
+      else if (val === false) val = 'false';
+      else if (val === null) val = 'null';
+      subbed = subbed.replace(re, val);
+    });
+    // Replace Python ops
+    subbed = subbed.replace(/\*\*/g, '**POWER**');
+    subbed = subbed.replace(/\/\//g, 'Math.floor(1/0)*0+');
+    subbed = subbed.replace(/\*\*POWER\*\*/g, '**');
+    subbed = subbed.replace(/\band\b/g, '&&');
+    subbed = subbed.replace(/\bor\b/g, '||');
+    subbed = subbed.replace(/\bnot\b/g, '!');
+    // Floor division
+    const floorDiv = subbed.match(/(.+?)\/\/(.+)/);
+    if (floorDiv) {
+      try {
+        const a = evalJS(floorDiv[1].trim(), vars);
+        const b = evalJS(floorDiv[2].trim(), vars);
+        return Math.floor(a/b);
+      } catch(e) {}
+    }
+    return evalJS(subbed, vars);
+  }
+
+  function evalJS(expr, vars) {
+    try {
+      // Handle len()
+      expr = expr.replace(/\blen\(([^)]+)\)/g, (_, a) => {
+        const v = evalExpr(a, vars);
+        return v ? v.length : 0;
+      });
+      // Handle type()
+      expr = expr.replace(/\btype\(([^)]+)\)/g, (_, a) => {
+        const v = evalExpr(a, vars);
+        if (typeof v === 'string') return '"<class \'str\'>"';
+        if (typeof v === 'number') return Number.isInteger(v) ? '"<class \'int\'>"' : '"<class \'float\'>"';
+        if (typeof v === 'boolean') return '"<class \'bool\'>"';
+        return '"<class \'NoneType\'>"';
+      });
+      // Handle str()
+      expr = expr.replace(/\bstr\(([^)]+)\)/g, (_, a) => {
+        const v = evalExpr(a, vars);
+        return JSON.stringify(String(v));
+      });
+      // Handle int()
+      expr = expr.replace(/\bint\(([^)]+)\)/g, (_, a) => {
+        const v = evalExpr(a, vars);
+        return parseInt(v);
+      });
+      // Handle float()
+      expr = expr.replace(/\bfloat\(([^)]+)\)/g, (_, a) => {
+        const v = evalExpr(a, vars);
+        return parseFloat(v);
+      });
+      // Handle range()
+      expr = expr.replace(/\brange\(([^)]+)\)/g, (_, args) => {
+        const parts = args.split(',').map(a => parseInt(a.trim()));
+        let arr = [];
+        if (parts.length === 1) for(let x=0; x<parts[0]; x++) arr.push(x);
+        else if (parts.length === 2) for(let x=parts[0]; x<parts[1]; x++) arr.push(x);
+        else for(let x=parts[0]; x<parts[1]; x+=parts[2]) arr.push(x);
+        return JSON.stringify(arr);
+      });
+      return Function('"use strict"; return (' + expr + ')')();
+    } catch(e) {
+      return expr;
+    }
+  }
+
+  function getIndent(line) {
+    let count = 0;
+    for (const c of line) { if (c === ' ') count++; else break; }
+    return count;
+  }
+
+  function processBlock(lines, startIdx, baseIndent) {
+    let idx = startIdx;
+    while (idx < lines.length && execCount < maxLines) {
+      const rawLine = lines[idx];
+      const line = rawLine.trimEnd();
+      if (!line || line.trimStart().startsWith('#')) { idx++; continue; }
+      const indent = getIndent(line);
+      if (indent < baseIndent) break;
+      const stripped = line.trim();
+      execCount++;
+
+      // print statement
+      if (stripped.startsWith('print(')) {
+        const inner = stripped.slice(6, -1);
+        const parts = smartSplit(inner, ',');
+        const vals = parts.map(p => {
+          const v = evalExpr(p.trim(), variables);
+          if (v === null) return 'None';
+          if (v === true) return 'True';
+          if (v === false) return 'False';
+          return String(v);
+        });
+        output += vals.join(' ') + '\n';
+        idx++;
+      }
+      // input() — simulate with placeholder
+      else if (stripped.includes(' = input(')) {
+        const varName = stripped.split('=')[0].trim();
+        variables[varName] = 'INPUT_VALUE';
+        idx++;
+      }
+      // int/float cast assignment
+      else if (/^\w+ = int\(/.test(stripped) || /^\w+ = float\(/.test(stripped)) {
+        const parts2 = stripped.split('=');
+        const varName = parts2[0].trim();
+        const val = evalExpr(parts2.slice(1).join('=').trim(), variables);
+        variables[varName] = val;
+        idx++;
+      }
+      // for loop
+      else if (stripped.startsWith('for ') && stripped.includes(' in ')) {
+        const match = stripped.match(/^for\s+(\w+)\s+in\s+(.+):$/);
+        if (match) {
+          const loopVar = match[1];
+          const iterExpr = evalExpr(match[2], variables);
+          const iterArr = Array.isArray(iterExpr) ? iterExpr : (
+            typeof iterExpr === 'string' ? iterExpr.split('') : []);
+          // collect body
+          const bodyLines = [];
+          let j = idx + 1;
+          while (j < lines.length) {
+            const bl = lines[j];
+            if (!bl.trim() || bl.trimStart().startsWith('#')) { j++; continue; }
+            if (getIndent(bl) > indent) { bodyLines.push(bl); j++; }
+            else break;
+          }
+          for (const item of iterArr) {
+            if (execCount >= maxLines) break;
+            variables[loopVar] = item;
+            processBlock(bodyLines, 0, getIndent(bodyLines[0] || '    '));
+          }
+          idx = j;
+        } else { idx++; }
+      }
+      // while loop
+      else if (stripped.startsWith('while ')) {
+        const cond = stripped.slice(6).replace(/:$/, '').trim();
+        const bodyLines2 = [];
+        let j = idx + 1;
+        while (j < lines.length) {
+          const bl = lines[j];
+          if (!bl.trim()) { j++; continue; }
+          if (getIndent(bl) > indent) { bodyLines2.push(bl); j++; }
+          else break;
+        }
+        let loopCount = 0;
+        while (evalExpr(cond, variables) && loopCount < 100 && execCount < maxLines) {
+          processBlock(bodyLines2, 0, getIndent(bodyLines2[0] || '    '));
+          loopCount++;
+          execCount++;
+        }
+        idx = j;
+      }
+      // if/elif/else
+      else if (stripped.startsWith('if ') || stripped.startsWith('elif ')) {
+        const cond2 = stripped.replace(/^(if|elif)\s+/, '').replace(/:$/, '').trim();
+        const condResult = evalExpr(cond2, variables);
+        const bodyLines3 = [];
+        let j = idx + 1;
+        while (j < lines.length) {
+          const bl = lines[j];
+          if (!bl.trim()) { j++; continue; }
+          if (getIndent(bl) > indent) { bodyLines3.push(bl); j++; }
+          else break;
+        }
+        if (condResult) {
+          processBlock(bodyLines3, 0, getIndent(bodyLines3[0] || '    '));
+          // Skip elif/else branches
+          while (j < lines.length) {
+            const bl = lines[j];
+            if (!bl.trim()) { j++; continue; }
+            if (getIndent(bl) === indent && (bl.trim().startsWith('elif') || bl.trim().startsWith('else'))) {
+              j++;
+              while (j < lines.length) {
+                const bbl = lines[j];
+                if (!bbl.trim()) { j++; continue; }
+                if (getIndent(bbl) > indent) j++;
+                else break;
+              }
+            } else break;
+          }
+        } else {
+          // Find else or elif
+          while (j < lines.length) {
+            const bl = lines[j];
+            if (!bl.trim()) { j++; continue; }
+            if (getIndent(bl) === indent && bl.trim().startsWith('elif')) {
+              // Process elif recursively
+              const remainingLines = lines.slice(j);
+              const fakeCode = remainingLines.join('\n');
+              const oldOutput = output;
+              processBlock(remainingLines, 0, indent);
+              break;
+            } else if (getIndent(bl) === indent && bl.trim().startsWith('else')) {
+              const elseBody = [];
+              j++;
+              while (j < lines.length) {
+                const ebl = lines[j];
+                if (!ebl.trim()) { j++; continue; }
+                if (getIndent(ebl) > indent) { elseBody.push(ebl); j++; }
+                else break;
+              }
+              processBlock(elseBody, 0, getIndent(elseBody[0] || '    '));
+              break;
+            } else break;
+          }
+        }
+        idx = j;
+      }
+      else if (stripped.startsWith('else:')) {
+        idx++;
+        // else body handled by if block
+      }
+      // def (skip function definitions for inline execution)
+      else if (stripped.startsWith('def ')) {
+        // simple function capture — skip for now
+        let j = idx + 1;
+        while (j < lines.length && getIndent(lines[j]) > indent) j++;
+        idx = j;
+      }
+      // Assignment
+      else if (stripped.includes(' = ') && !stripped.includes('==')) {
+        const eqIdx = stripped.indexOf(' = ');
+        const varName = stripped.slice(0, eqIdx).trim();
+        const valExpr = stripped.slice(eqIdx + 3).trim();
+        if (/^[\w]+$/.test(varName)) {
+          variables[varName] = evalExpr(valExpr, variables);
+        }
+        idx++;
+      }
+      // += -= *= etc
+      else if (/\+=|-=|\*=|\/=/.test(stripped)) {
+        const match2 = stripped.match(/^(\w+)\s*(\+=|-=|\*=|\/=)\s*(.+)$/);
+        if (match2) {
+          const vn = match2[1], op = match2[2], vv = evalExpr(match2[3], variables);
+          if (op === '+=') variables[vn] = (variables[vn] || 0) + vv;
+          else if (op === '-=') variables[vn] = (variables[vn] || 0) - vv;
+          else if (op === '*=') variables[vn] = (variables[vn] || 0) * vv;
+          else if (op === '/=') variables[vn] = (variables[vn] || 0) / vv;
+        }
+        idx++;
+      }
+      else { idx++; }
+    }
+    return idx;
+  }
+
+  function smartSplit(str, sep) {
+    const parts = [];
+    let depth = 0, current = '';
+    for (const c of str) {
+      if (c === '(' || c === '[' || c === '{') depth++;
+      else if (c === ')' || c === ']' || c === '}') depth--;
+      else if (c === sep && depth === 0) { parts.push(current); current = ''; continue; }
+      current += c;
+    }
+    if (current) parts.push(current);
+    return parts;
+  }
+
+  try {
+    processBlock(lines, 0, 0);
+  } catch(e) {
+    output += '\n[Error: ' + e.message + ']';
+  }
+  return output || '(no output)';
+}
+
+// =============================================
+//  TOAST NOTIFICATIONS
+// =============================================
+function showToast(msg, type='success') {
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = (type === 'success' ? '✅ ' : '❌ ') + msg;
+  document.getElementById('toastContainer').appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+// =============================================
+//  PWA — INSTALL PROMPT
+// =============================================
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  document.getElementById('installBanner').style.display = 'flex';
+});
+
+function installApp() {
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    deferredInstallPrompt.userChoice.then(result => {
+      if (result.outcome === 'accepted') {
+        showToast('App installed successfully!');
+        document.getElementById('installBanner').style.display = 'none';
+      }
+      deferredInstallPrompt = null;
+    });
+  }
+}
+
+// =============================================
+//  SERVICE WORKER REGISTRATION
+//  Only registers when running as a real hosted
+//  PWA — skipped in sandboxed/iframe previews
+// =============================================
+if ('serviceWorker' in navigator) {
+  // Only register if we are the top-level window (not in iframe/sandbox)
+  const isTopLevel = window.self === window.top;
+  const isLocalOrHosted = location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+  if (isTopLevel && isLocalOrHosted) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./service-worker.js')
+        .then(reg => console.log('SW registered:', reg.scope))
+        .catch(err => console.log('SW skipped (preview mode)'));
+    });
+  }
+}
+
+// =============================================
+//  UTILITIES
+// =============================================
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// =============================================
+//  INIT
+// =============================================
+window.addEventListener('DOMContentLoaded', () => {
+  initParticles();
+  // Init gate canvas after a short delay
+  setTimeout(() => {
+    if (document.getElementById('gateCanvas')) drawGate();
+  }, 500);
+});
+</script>
+</body>
+</html>
